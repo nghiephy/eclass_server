@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import viewEngine from './config/viewEngine';
 import routes from './routes';
 // import cors from 'cors';
-import cookieParser from 'cookie-parser';
+var cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 

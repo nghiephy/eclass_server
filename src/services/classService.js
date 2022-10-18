@@ -95,9 +95,10 @@ let createClass = (userId, data) => {
             const timestamp = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds;
 
             const classData = await db.Class.create({
+                teacherId: userId,
                 name: data.name,
                 topic: data.topic,
-                semeter: data.semeter,
+                semester: data.semester,
                 room: data.room,
                 enrollKey: makeKey(5) + getRandomInt(1000),
                 coverImg: '',

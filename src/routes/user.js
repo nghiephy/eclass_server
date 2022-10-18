@@ -7,6 +7,6 @@ import middlewareController from '../controllers/middlewareController';
 router.post('/login', userController.handleLogin);
 router.post('/register', userController.handleRegister);
 router.get('/refresh', userController.refreshToken);
-router.post('/logout', middlewareController.verifyToken, userController.handleLogout);
+router.post('/logout', userController.handleLogout);
 
 module.exports = router;

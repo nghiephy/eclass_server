@@ -42,17 +42,18 @@ let createClass = async (req, res) => {
     const userId = req.user.id;
     const data = req.body;
 
+    console.log(data);
     try {
         const dataRes = await classService.createClass(userId, {
-            name: data.name,
-            semeter: data.semeter || '',
+            name: data.classname,
+            semester: data.semester || '',
             topic: data.topic || '',
             room: data.room || '',
         });
 
         res.status(200).json({ message: 'success', data: dataRes });
     } catch (err) {
-        res.status(500).json({ message: 'fail' });
+        res.status(500).json({ message: 'fail', error: err });
     }
 };
 

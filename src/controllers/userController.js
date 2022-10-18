@@ -23,7 +23,7 @@ let generateAccessToken = (user) => {
             name: user.fullName,
         },
         process.env.JWT_ACCESS_KEY,
-        { expiresIn: '30h' },
+        { expiresIn: '30s' },
     );
 };
 
@@ -48,7 +48,6 @@ let handleLogin = async (req, res) => {
         refreshToken = generateRefreshToken(userData.user);
 
         refreshTokens.push(refreshToken);
-
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: false,
@@ -75,13 +74,14 @@ let handleRegister = async (req, res) => {
 
 let refreshToken = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
+    console.log(refreshToken);
 
     if (!refreshToken) {
         return res.status(401).json("You're not authenticated");
     }
-    if (!refreshTokens.includes(refreshToken)) {
-        return res.status(403).json('Refresh Token is not valid');
-    }
+    // if (!refreshTokens.includes(refreshToken)) {
+    //     return res.status(403).json('Refresh Token is not valid');
+    // }
 
     jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
         if (err) {
@@ -89,14 +89,14 @@ let refreshToken = async (req, res) => {
         }
         refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
         const newAccessToken = generateAccessToken(user);
-        const newRefreshToken = generateRefreshToken(user);
-        refreshTokens.push(newRefreshToken);
-        res.cookie('refreshToken', newRefreshToken, {
-            httpOnly: true,
-            secure: false,
-            path: '/',
-            sameSite: 'strict',
-        });
+        // const newRefreshToken = generateRefreshToken(user);
+        // refreshTokens.push(newRefreshToken);
+        // res.cookie('refreshToken', newRefreshToken, {
+        //     httpOnly: true,
+        //     secure: false,
+        //     path: '/',
+        //     sameSite: 'strict',
+        // });
         res.status(200).json({
             accessToken: newAccessToken,
         });
@@ -105,7 +105,7 @@ let refreshToken = async (req, res) => {
 
 let handleLogout = async (req, res) => {
     res.clearCookie('refreshToken');
-    refreshTokens = refreshTokens.filter((token) => token !== req.cookies.refreshToken);
+    // refreshTokens = refreshTokens.filter((token) => token !== req.cookies.refreshToken);
 
     res.status(200).json('Logged out!');
 };
