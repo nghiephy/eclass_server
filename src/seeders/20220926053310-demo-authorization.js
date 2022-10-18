@@ -12,19 +12,33 @@ module.exports = {
          * }], {});
          */
         await queryInterface.bulkInsert(
-            'users_auths',
+            'authorizations',
             [
                 {
-                    username: 'nghiephy',
-                    password: '$2a$10$HXs8X0HPBvUeal/sMbgNHe4KhcA7I2eHSpX9GEW6zsR05f1bRUjwO',
                     userId: 1,
+                    class: 1,
+                    role: 'GV',
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
-                    username: 'haiyenln',
-                    password: '$2a$10$HXs8X0HPBvUeal/sMbgNHe4KhcA7I2eHSpX9GEW6zsR05f1bRUjwO',
+                    userId: 1,
+                    class: 2,
+                    role: 'HS',
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                },
+                {
                     userId: 2,
+                    class: 1,
+                    role: 'HS',
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                },
+                {
+                    userId: 2,
+                    class: 2,
+                    role: 'GV',
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
@@ -40,6 +54,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
-        await queryInterface.bulkDelete('users_auths', null, {});
+        await queryInterface.bulkDelete('authorizations', null, {});
     },
 };

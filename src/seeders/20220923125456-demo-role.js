@@ -12,15 +12,26 @@ module.exports = {
          * }], {});
          */
         await queryInterface.bulkInsert(
-            'Users',
+            'Roles',
             [
                 {
-                    fullName: 'John Doe',
-                    avatar: '/',
-                    email: 'nghiep@gmail.com',
-                    birthday: new Date(),
-                    googleLogin: '12345',
-                    locale: 'Vi',
+                    key: 'HS',
+                    name: 'Học sinh',
+                    description: 'Học sinh trong một lớp học',
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                },
+                {
+                    key: 'GV',
+                    name: 'Giáo viên',
+                    description: 'Giáo viên trong một lớp học',
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                },
+                {
+                    key: 'TG',
+                    name: 'Trợ giảng',
+                    description: 'Trợ giảng trong một lớp học',
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
@@ -36,6 +47,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
-        await queryInterface.bulkDelete('Users', null, {});
+        await queryInterface.bulkDelete('Roles', null, {});
     },
 };

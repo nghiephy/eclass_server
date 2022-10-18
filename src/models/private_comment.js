@@ -1,36 +1,32 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-    class Users_Auth extends Model {
+    class Private_Comment extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            Users_Auth.belongsTo(models.User, {
+            Private_Comment.belongsTo(models.Post, {
+                foreignKey: 'postId',
+            });
+            Private_Comment.belongsTo(models.User, {
                 foreignKey: 'userId',
-                constraints: true,
             });
         }
     }
-    Users_Auth.init(
+    Private_Comment.init(
         {
-            username: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                unique: true,
-            },
-            password: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
             userId: DataTypes.INTEGER,
+            postId: DataTypes.INTEGER,
+            content: DataTypes.TEXT,
+            isDelete: DataTypes.BOOLEAN,
         },
         {
             sequelize,
-            modelName: 'Users_Auth',
+            modelName: 'Private_Comment',
         },
     );
-    return Users_Auth;
+    return Private_Comment;
 };

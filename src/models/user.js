@@ -11,6 +11,21 @@ module.exports = (sequelize, DataTypes) => {
             User.hasOne(models.Users_Auth, {
                 foreignKey: 'userId',
             });
+            User.hasOne(models.Class, {
+                foreignKey: 'teacherId',
+            });
+            User.hasMany(models.Authorization, {
+                foreignKey: 'userId',
+            });
+            User.hasMany(models.Post, {
+                foreignKey: 'userId',
+            });
+            User.hasMany(models.Comment, {
+                foreignKey: 'userId',
+            });
+            User.hasMany(models.Private_Comment, {
+                foreignKey: 'userId',
+            });
         }
     }
     User.init(

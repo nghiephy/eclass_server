@@ -2,24 +2,37 @@
 module.exports = {
     up: async (queryInterface, Sequelize) => {
         await queryInterface
-            .createTable('users_auths', {
+            .createTable('classes', {
                 id: {
                     allowNull: false,
                     autoIncrement: true,
                     primaryKey: true,
                     type: Sequelize.INTEGER,
                 },
-                username: {
-                    type: Sequelize.STRING,
-                    allowNull: false,
-                    unique: true,
-                },
-                password: {
-                    type: Sequelize.STRING,
-                    allowNull: false,
-                },
-                userId: {
+                teacherId: {
                     type: Sequelize.INTEGER,
+                },
+                name: {
+                    type: Sequelize.STRING,
+                },
+                topic: {
+                    type: Sequelize.STRING,
+                },
+                semester: {
+                    type: Sequelize.STRING,
+                },
+                room: {
+                    type: Sequelize.STRING,
+                },
+                enrollKey: {
+                    unique: true,
+                    type: Sequelize.STRING,
+                },
+                coverImg: {
+                    type: Sequelize.STRING,
+                },
+                primaryColor: {
+                    type: Sequelize.STRING,
                 },
                 createdAt: {
                     allowNull: false,
@@ -30,19 +43,19 @@ module.exports = {
                     type: Sequelize.DATE,
                 },
             })
-            .then(() =>
-                queryInterface.addConstraint('users_auths', {
+            .then(() => {
+                queryInterface.addConstraint('classes', {
                     type: 'FOREIGN KEY',
-                    name: 'FK_users_auths_users',
-                    fields: ['userId'],
+                    name: 'FK_classes_users',
+                    fields: ['teacherId'],
                     references: {
                         table: 'users',
                         field: 'id',
                     },
-                }),
-            );
+                });
+            });
     },
     down: async (queryInterface, Sequelize) => {
-        await queryInterface.dropTable('users_auths');
+        await queryInterface.dropTable('classes');
     },
 };

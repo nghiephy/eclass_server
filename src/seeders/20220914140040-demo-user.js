@@ -12,19 +12,25 @@ module.exports = {
          * }], {});
          */
         await queryInterface.bulkInsert(
-            'users_auths',
+            'Users',
             [
                 {
-                    username: 'nghiephy',
-                    password: '$2a$10$HXs8X0HPBvUeal/sMbgNHe4KhcA7I2eHSpX9GEW6zsR05f1bRUjwO',
-                    userId: 1,
+                    fullName: 'Nguyen Nghiep',
+                    avatar: '/',
+                    email: 'nghiep@gmail.com',
+                    birthday: new Date(),
+                    googleLogin: '12345',
+                    locale: 'Vi',
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
-                    username: 'haiyenln',
-                    password: '$2a$10$HXs8X0HPBvUeal/sMbgNHe4KhcA7I2eHSpX9GEW6zsR05f1bRUjwO',
-                    userId: 2,
+                    fullName: 'Hai Yen',
+                    avatar: '/',
+                    email: 'haiyen@gmail.com',
+                    birthday: new Date(),
+                    googleLogin: null,
+                    locale: 'Vi',
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
@@ -40,6 +46,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
-        await queryInterface.bulkDelete('users_auths', null, {});
+        await queryInterface.bulkDelete('Users', null, {});
     },
 };

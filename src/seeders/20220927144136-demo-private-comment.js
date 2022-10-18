@@ -12,19 +12,13 @@ module.exports = {
          * }], {});
          */
         await queryInterface.bulkInsert(
-            'users_auths',
+            'private_comments',
             [
                 {
-                    username: 'nghiephy',
-                    password: '$2a$10$HXs8X0HPBvUeal/sMbgNHe4KhcA7I2eHSpX9GEW6zsR05f1bRUjwO',
-                    userId: 1,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    username: 'haiyenln',
-                    password: '$2a$10$HXs8X0HPBvUeal/sMbgNHe4KhcA7I2eHSpX9GEW6zsR05f1bRUjwO',
                     userId: 2,
+                    postId: 1,
+                    content: 'Bài này làm sao vậy ạ?',
+                    isDelete: false,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
@@ -40,6 +34,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
-        await queryInterface.bulkDelete('users_auths', null, {});
+        await queryInterface.bulkDelete('private_comments', null, {});
     },
 };

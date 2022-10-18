@@ -12,19 +12,29 @@ module.exports = {
          * }], {});
          */
         await queryInterface.bulkInsert(
-            'users_auths',
+            'Classes',
             [
                 {
-                    username: 'nghiephy',
-                    password: '$2a$10$HXs8X0HPBvUeal/sMbgNHe4KhcA7I2eHSpX9GEW6zsR05f1bRUjwO',
-                    userId: 1,
+                    teacherId: 1,
+                    name: 'Javascrip Cơ Bản',
+                    topic: 'Ngôn ngữ lập trình',
+                    semester: 'HK2 2022-2023',
+                    room: '102-B1',
+                    enrollKey: '123ABC',
+                    coverImg: '/',
+                    primaryColor: 'blue',
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
-                    username: 'haiyenln',
-                    password: '$2a$10$HXs8X0HPBvUeal/sMbgNHe4KhcA7I2eHSpX9GEW6zsR05f1bRUjwO',
-                    userId: 2,
+                    teacherId: 2,
+                    name: 'Tập huấn giảng dạy',
+                    topic: 'Tập huấn',
+                    semester: 'HK2 2022-2023',
+                    room: '102-B2',
+                    enrollKey: '124ABC',
+                    coverImg: '/',
+                    primaryColor: 'blue',
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
@@ -40,6 +50,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
-        await queryInterface.bulkDelete('users_auths', null, {});
+        await queryInterface.bulkDelete('Classes', null, {});
     },
 };
