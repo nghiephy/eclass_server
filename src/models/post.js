@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
             Post.hasMany(models.Comment, {
                 foreignKey: 'postId',
             });
+            Post.hasMany(models.Link, {
+                foreignKey: 'postId',
+            });
+            Post.hasMany(models.File, {
+                foreignKey: 'postId',
+            });
             Post.belongsTo(models.User, {
                 foreignKey: 'userId',
             });
@@ -28,7 +34,14 @@ module.exports = (sequelize, DataTypes) => {
             userId: DataTypes.INTEGER,
             class: DataTypes.INTEGER,
             content: DataTypes.TEXT,
-            type: DataTypes.STRING,
+            type: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                references: {
+                    model: 'post_types',
+                    key: 'key',
+                },
+            },
             isHidden: DataTypes.BOOLEAN,
             isDelete: DataTypes.BOOLEAN,
         },

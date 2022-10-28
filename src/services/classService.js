@@ -2,6 +2,8 @@ import db from '../models/index';
 import sequelize from 'sequelize';
 import { QueryTypes } from 'sequelize';
 
+import postService from './postService';
+
 let getClasses = (userId, role) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -121,6 +123,39 @@ let createClass = (userId, data) => {
     });
 };
 
+let getClass = (userId, classId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const classData = await db.Class.findOne({
+                where: {
+                    id: classId,
+                },
+                include: {
+                    model: db.Authorization,
+                    where: {
+                        userId: userId,
+                    },
+                    attributes: [],
+                },
+            });
+            resolve(classData);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+let getAllPost = (userId, classId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const annoucePost = await postService.getAnnouPost(userId, classId);
+            resolve(annoucePost);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 function makeKey(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -139,4 +174,6 @@ module.exports = {
     getClasses: getClasses,
     enrollClass: enrollClass,
     createClass: createClass,
+    getClass: getClass,
+    getAllPost: getAllPost,
 };

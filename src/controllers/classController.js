@@ -42,7 +42,6 @@ let createClass = async (req, res) => {
     const userId = req.user.id;
     const data = req.body;
 
-    console.log(data);
     try {
         const dataRes = await classService.createClass(userId, {
             name: data.classname,
@@ -57,8 +56,38 @@ let createClass = async (req, res) => {
     }
 };
 
+let getClassDetail = async (req, res) => {
+    const userId = req.user.id;
+    const classId = req.params.id;
+    const role = req.query.role;
+
+    const classRes = await classService.getClass(userId, classId);
+
+    if (classRes) {
+        res.status(200).json({ message: 'ok', data: classRes });
+    } else {
+        res.status(200).json({ message: 'get class fail' });
+    }
+};
+
+let getAllPost = async (req, res) => {
+    const userId = req.user.id;
+    const classId = req.params.id;
+    const role = req.query.role;
+
+    const classRes = await classService.getAllPost(userId, classId);
+
+    if (classRes) {
+        res.status(200).json({ message: 'ok', data: classRes });
+    } else {
+        res.status(200).json({ message: 'get class fail' });
+    }
+};
+
 module.exports = {
     getAllClass: getAllClass,
     enrollClass: enrollClass,
     createClass: createClass,
+    getClassDetail: getClassDetail,
+    getAllPost: getAllPost,
 };

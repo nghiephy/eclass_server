@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import viewEngine from './config/viewEngine';
 import routes from './routes';
+const path = require('path');
 // import cors from 'cors';
 var cookieParser = require('cookie-parser');
 
@@ -16,6 +17,9 @@ let port = process.env.PORT || 6969;
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Setup static path
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Add headers before the routes are defined
 app.use(function (req, res, next) {

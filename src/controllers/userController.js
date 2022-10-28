@@ -2,6 +2,8 @@ import db from '../models/index.js';
 import { QueryTypes } from 'sequelize';
 import userService from '../services/userService';
 import jwt from 'jsonwebtoken';
+const fs = require('fs');
+const path = require('path');
 
 let refreshTokens = [];
 
@@ -23,7 +25,7 @@ let generateAccessToken = (user) => {
             name: user.fullName,
         },
         process.env.JWT_ACCESS_KEY,
-        { expiresIn: '30s' },
+        { expiresIn: '30h' },
     );
 };
 
@@ -65,16 +67,20 @@ let handleLogin = async (req, res) => {
 };
 
 let handleRegister = async (req, res) => {
-    let message = await userService.handleCreateNewUser(req.body);
-
-    return res.status(200).json({
-        message,
-    });
+    try {
+        let message = await userService.handleCreateNewUser(req.body);
+        return res.status(200).json({
+            message,
+        });
+    } catch (err) {
+        return res.status(400).json({
+            err,
+        });
+    }
 };
 
 let refreshToken = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
-    console.log(refreshToken);
 
     if (!refreshToken) {
         return res.status(401).json("You're not authenticated");
@@ -110,9 +116,59 @@ let handleLogout = async (req, res) => {
     res.status(200).json('Logged out!');
 };
 
+let handleGetInfor = async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const user = await userService.handleGetInfor(userId);
+        res.status(200).json({ message: 'success', user: user });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail' });
+    }
+};
+
+let handleUpdate = async (req, res) => {
+    const userId = req.user.id;
+    const data = req.body;
+    let avatarPath = '';
+    let avatarOldPath = path.resolve(__dirname, '../public') + data.old_avatar;
+    console.log(avatarOldPath);
+
+    if (req.fileValidationError) {
+        return res.send(req.fileValidationError);
+    } else if (!req.file) {
+        avatarPath = data.old_avatar;
+    } else {
+        avatarPath = '/img/avatar/' + req.file.filename;
+
+        if (data.old_avatar !== '"/img/avatar/example_avatar.jpg"') {
+            fs.unlink(avatarOldPath, (err) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+            });
+        }
+    }
+
+    data.avatarPath = avatarPath;
+
+    try {
+        const respone = await userService.handleUpdateInfor(userId, data);
+
+        res.status(200).json({ message: 'success', data: data, respone });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail' });
+    }
+};
+
 module.exports = {
     handleLogin: handleLogin,
     handleRegister: handleRegister,
     refreshToken: refreshToken,
     handleLogout: handleLogout,
+    handleGetInfor: handleGetInfor,
+    handleUpdate: handleUpdate,
 };

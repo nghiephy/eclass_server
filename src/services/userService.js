@@ -1,6 +1,7 @@
 import db from '../models/index';
 import bcrypt from 'bcryptjs';
 import sequelize from 'sequelize';
+const moment = require('moment');
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -26,6 +27,7 @@ let handleUserLogin = (username, password) => {
                         [sequelize.col('User.birthday'), 'birthday'],
                         [sequelize.col('User.locale'), 'locale'],
                         [sequelize.col('User.googleLogin'), 'googleLogin'],
+                        [sequelize.col('User.createdAt'), 'joinedDate'],
                     ],
                     include: {
                         model: db.User,
@@ -69,6 +71,7 @@ let handleCreateNewUser = async (data) => {
                 const userIntance = await db.User.create({
                     fullName: data.fullname,
                     email: data.email,
+                    locale: 'Vi',
                 });
                 const usersAuthIntance = await db.Users_Auth.create({
                     username: data.username,
@@ -77,7 +80,7 @@ let handleCreateNewUser = async (data) => {
                 });
                 resolve('User was created succeed!');
             } else {
-                resolve('This username was used!');
+                reject('This username was used!');
             }
         } catch (e) {
             reject(e);
@@ -115,7 +118,55 @@ let hashUserPassowrd = (password) => {
     });
 };
 
+let handleGetInfor = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const user = await db.User.findOne({
+                where: {
+                    id: userId,
+                },
+                raw: true,
+            });
+            const birthdayFormated = moment.utc(user.birthday).format('YYYY-MM-DD');
+            const createdAtFormated = moment.utc(user.createdAt).format('YYYY-MM-DD HH:mm:ss');
+            const updatedAtFormated = moment.utc(user.updateddAt).format('YYYY-MM-DD HH:mm:ss');
+            user.birthday = birthdayFormated;
+            user.createdAt = createdAtFormated;
+            user.updatedAt = updatedAtFormated;
+            resolve(user);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+let handleUpdateInfor = (userId, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedRows = await db.User.update(
+                {
+                    fullName: data.fullName,
+                    avatar: data.avatarPath,
+                    email: data.email,
+                    birthday: data.birthday,
+                },
+                {
+                    where: {
+                        id: userId,
+                    },
+                },
+            );
+
+            resolve(updatedRows);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 module.exports = {
     handleUserLogin: handleUserLogin,
     handleCreateNewUser: handleCreateNewUser,
+    handleGetInfor: handleGetInfor,
+    handleUpdateInfor: handleUpdateInfor,
 };

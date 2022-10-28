@@ -16,7 +16,7 @@ module.exports = {
             [
                 {
                     fullName: 'Nguyen Nghiep',
-                    avatar: '/',
+                    avatar: '/img/avatar/example_avatar.jpg',
                     email: 'nghiep@gmail.com',
                     birthday: new Date(),
                     googleLogin: '12345',
@@ -26,7 +26,7 @@ module.exports = {
                 },
                 {
                     fullName: 'Hai Yen',
-                    avatar: '/',
+                    avatar: '/img/avatar/example_avatar.jpg',
                     email: 'haiyen@gmail.com',
                     birthday: new Date(),
                     googleLogin: null,
