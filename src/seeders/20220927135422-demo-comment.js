@@ -16,6 +16,7 @@ module.exports = {
             [
                 {
                     userId: 1,
+                    classId: 1,
                     postId: 1,
                     content: 'Cám ơn thầy!',
                     isDelete: false,
@@ -24,6 +25,7 @@ module.exports = {
                 },
                 {
                     userId: 1,
+                    classId: 1,
                     postId: 1,
                     content: 'Có làm hết bài tập luôn không ạ?',
                     reply: 1,

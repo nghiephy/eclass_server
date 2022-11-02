@@ -45,6 +45,13 @@ viewEngine(app);
 // Routes init
 routes(app);
 
+// const server = require('http').createServer(app);
+// const io = require('socket.io')(server);
+
+// io.on('connection', (socket) => {
+//     console.log('connected: ', socket.id);
+// });
+
 app.listen(port, () => {
     console.log('Server listening on port ' + port);
 });

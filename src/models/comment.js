@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
             Comment.belongsTo(models.User, {
                 foreignKey: 'userId',
             });
+            Comment.belongsTo(models.Class, {
+                foreignKey: 'classId',
+            });
             Comment.belongsTo(models.Post, {
                 foreignKey: 'postId',
             });
@@ -23,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     Comment.init(
         {
             userId: DataTypes.INTEGER,
+            classId: DataTypes.INTEGER,
             postId: DataTypes.INTEGER,
             content: DataTypes.TEXT,
             reply: DataTypes.INTEGER,

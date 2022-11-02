@@ -15,7 +15,6 @@ let createPost = (userId, data) => {
             let seconds = date_ob.getSeconds();
 
             const timestamp = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds;
-
             const postIntance = await db.Post.create({
                 userId: userId,
                 class: parseInt(data.classId),

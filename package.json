@@ -24,7 +24,8 @@
         "mysql2": "^2.2.5",
         "path": "^0.12.7",
         "sequelize": "^6.6.2",
-        "slugify": "^1.6.5"
+        "slugify": "^1.6.5",
+        "socket.io": "^4.5.3"
     },
     "devDependencies": {
         "@babel/core": "^7.12.10",

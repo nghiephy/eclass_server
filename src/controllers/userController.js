@@ -89,7 +89,7 @@ let refreshToken = async (req, res) => {
     //     return res.status(403).json('Refresh Token is not valid');
     // }
 
-    jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, async (err, user) => {
         if (err) {
             console.log(err);
         }
@@ -103,9 +103,17 @@ let refreshToken = async (req, res) => {
         //     path: '/',
         //     sameSite: 'strict',
         // });
-        res.status(200).json({
-            accessToken: newAccessToken,
-        });
+        try {
+            const dataUser = await userService.handleGetInfor(user.id);
+            res.status(200).json({
+                accessToken: newAccessToken,
+                dataUser,
+            });
+        } catch (err) {
+            res.status(500).json({
+                message: 'get infor user fail!',
+            });
+        }
     });
 };
 
@@ -142,7 +150,7 @@ let handleUpdate = async (req, res) => {
     } else {
         avatarPath = '/img/avatar/' + req.file.filename;
 
-        if (data.old_avatar !== '"/img/avatar/example_avatar.jpg"') {
+        if (data.old_avatar !== '/img/avatar/example_avatar.jpg') {
             fs.unlink(avatarOldPath, (err) => {
                 if (err) {
                     console.error(err);
