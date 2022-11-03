@@ -12,12 +12,16 @@ module.exports = {
          * }], {});
          */
         await queryInterface.bulkInsert(
-            'materials',
+            'exercises',
             [
                 {
-                    postId: 3,
-                    title: 'Tài liệu chương 2',
+                    postId: 4,
+                    title: 'Bài tập chương 2 cơ bản',
                     guide: 'Các em xem tài liệu và làm bài tập trang 17 nhé!',
+                    topicId: 2,
+                    maxScore: 100,
+                    isBlock: false,
+                    typeExe: 'text',
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
@@ -33,6 +37,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
-        await queryInterface.bulkDelete('materials', null, {});
+        await queryInterface.bulkDelete('exercises', null, {});
     },
 };

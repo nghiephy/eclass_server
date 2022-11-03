@@ -13,7 +13,8 @@ let create = (userId, data) => {
                 content: data.title,
                 type: 'TL',
                 isCompleted: 0,
-                isDeleted: 0,
+                isDelete: 0,
+                isHidden: 0,
                 createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
                 updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
             });
@@ -22,7 +23,7 @@ let create = (userId, data) => {
                 postId: postId,
                 title: data.title,
                 guide: data.content,
-                topicId: data.topicId,
+                topicId: data.topicId !== 0 ? data.topicId : null,
                 createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
                 updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
             });

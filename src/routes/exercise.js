@@ -33,5 +33,6 @@ let uploadMultiple = multer({ storage: storage }).array('files', 10);
 
 router.get('/get-all/:classid', middlewareController.verifyToken, exerciseController.getAll);
 router.post('/TL/create', middlewareController.verifyToken, uploadMultiple, exerciseController.createMaterial);
+router.post('/BT/create', middlewareController.verifyToken, uploadMultiple, exerciseController.createExercise);
 
 module.exports = router;

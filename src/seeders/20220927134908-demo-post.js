@@ -45,6 +45,17 @@ module.exports = {
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
+                {
+                    userId: 1,
+                    class: 1,
+                    content: 'Bài tập chương 2 cơ bản',
+                    type: 'BT',
+                    isHidden: false,
+                    isDelete: false,
+                    isCompleted: false,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                },
             ],
             {},
         );

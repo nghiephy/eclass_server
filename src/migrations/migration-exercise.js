@@ -2,7 +2,7 @@
 module.exports = {
     up: async (queryInterface, Sequelize) => {
         await queryInterface
-            .createTable('materials', {
+            .createTable('exercises', {
                 id: {
                     allowNull: false,
                     autoIncrement: true,
@@ -19,8 +19,16 @@ module.exports = {
                     type: Sequelize.TEXT,
                 },
                 topicId: {
-                    allowNull: true,
                     type: Sequelize.INTEGER,
+                },
+                maxScore: {
+                    type: Sequelize.INTEGER,
+                },
+                isBlock: {
+                    type: Sequelize.BOOLEAN,
+                },
+                typeExe: {
+                    type: Sequelize.STRING,
                 },
                 createdAt: {
                     allowNull: false,
@@ -32,18 +40,18 @@ module.exports = {
                 },
             })
             .then(() => {
-                queryInterface.addConstraint('materials', {
+                queryInterface.addConstraint('exercises', {
                     type: 'FOREIGN KEY',
-                    name: 'FK_materials_posts',
+                    name: 'FK_exercises_posts',
                     fields: ['postId'],
                     references: {
                         table: 'posts',
                         field: 'id',
                     },
                 });
-                queryInterface.addConstraint('materials', {
+                queryInterface.addConstraint('exercises', {
                     type: 'FOREIGN KEY',
-                    name: 'FK_materials_topics',
+                    name: 'FK_exercises_topics',
                     fields: ['topicId'],
                     references: {
                         table: 'topics',
@@ -53,6 +61,6 @@ module.exports = {
             });
     },
     down: async (queryInterface, Sequelize) => {
-        await queryInterface.dropTable('materials');
+        await queryInterface.dropTable('exercises');
     },
 };
