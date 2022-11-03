@@ -47,6 +47,7 @@ let getAnnouPost = (userId, classId) => {
             const postData = await db.Post.findAll({
                 where: {
                     class: classId,
+                    type: 'TB',
                 },
                 attributes: [
                     ['id', 'postId'],

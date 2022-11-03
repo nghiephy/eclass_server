@@ -34,6 +34,17 @@ module.exports = {
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
+                {
+                    userId: 1,
+                    class: 1,
+                    content: 'Tài liệu chương 2',
+                    type: 'TL',
+                    isHidden: false,
+                    isDelete: false,
+                    isCompleted: false,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                },
             ],
             {},
         );

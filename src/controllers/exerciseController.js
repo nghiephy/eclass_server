@@ -1,18 +1,33 @@
 import db from '../models/index.js';
 import { QueryTypes } from 'sequelize';
 
-import postService from '../services/postService';
+import exerciseService from '../services/exerciseService';
+import materialService from '../services/materialService';
 
-let createPost = async (req, res) => {
+let getAll = async (req, res) => {
     const userId = req.user.id;
-    const data = req.body;
+    let classId = req.params.classid;
+
+    try {
+        const exerciseRes = await exerciseService.getAll(userId, classId);
+        res.status(200).json({ message: 'success', exercises: exerciseRes });
+    } catch (err) {
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
+let createMaterial = async (req, res) => {
+    const userId = req.user.id;
+    let data = req.body;
     const linkArr = data.links.length > 0 ? data.links.split(',') : [];
     const dataInsert = {};
 
     dataInsert.link_list = linkArr;
     dataInsert.content = data.content;
-    dataInsert.classId = data.classId;
+    dataInsert.classId = parseInt(data.classId);
+    dataInsert.topicId = parseInt(data.topicId);
     dataInsert.type = data.type;
+    dataInsert.title = data.title;
 
     if (req.fileValidationError) {
         return res.send(req.fileValidationError);
@@ -25,7 +40,7 @@ let createPost = async (req, res) => {
         // Loop through all the uploaded images and create images_list
         for (index = 0, len = files.length; index < len; ++index) {
             const item = {};
-            item.url = `/files/post/${files[index].filename}`;
+            item.url = `/files/exercise/${files[index].filename}`;
             item.name = files[index].originalname;
             item.type = files[index].mimetype;
             file_list.push(item);
@@ -33,27 +48,17 @@ let createPost = async (req, res) => {
         dataInsert.file_list = file_list;
     }
 
-    try {
-        await postService.createPost(userId, dataInsert);
-        res.status(200).json({ message: 'success', data: data, userId });
-    } catch (err) {
-        res.status(500).json({ message: 'fail', error: err });
-    }
-};
-
-let getAttachment = async (req, res) => {
-    const userId = req.user.id;
-    const postId = req.params.id;
+    console.log('data: ', dataInsert);
 
     try {
-        const data = await postService.getAttachment(userId, postId);
-        res.status(200).json({ message: 'success', data: data });
+        const materialRes = await materialService.create(userId, dataInsert);
+        res.status(200).json({ message: 'success', materialRes: materialRes });
     } catch (err) {
         res.status(500).json({ message: 'fail', error: err });
     }
 };
 
 module.exports = {
-    createPost: createPost,
-    getAttachment: getAttachment,
+    getAll: getAll,
+    createMaterial: createMaterial,
 };

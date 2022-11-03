@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
             Class.hasMany(models.Authorization, {
                 foreignKey: 'class',
             });
+            Class.hasMany(models.Topic, {
+                foreignKey: 'classId',
+            });
             Class.hasMany(models.Post, {
                 foreignKey: 'class',
             });

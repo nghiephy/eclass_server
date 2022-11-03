@@ -3,6 +3,8 @@ import userRouter from './user';
 import classRouter from './class';
 import postRouter from './post';
 import commentRouter from './comment';
+import topicRouter from './topic';
+import exerciseRouter from './exercise';
 
 function routes(app) {
     app.use('/', siteRouter);
@@ -10,6 +12,8 @@ function routes(app) {
     app.use('/api/class', classRouter);
     app.use('/api/post', postRouter);
     app.use('/api/comment', commentRouter);
+    app.use('/api/topic', topicRouter);
+    app.use('/api/exercise', exerciseRouter);
 }
 
 module.exports = routes;

@@ -8,6 +8,9 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
+            Post.hasOne(models.Material, {
+                foreignKey: 'postId',
+            });
             Post.hasMany(models.Comment, {
                 foreignKey: 'postId',
             });
@@ -44,6 +47,8 @@ module.exports = (sequelize, DataTypes) => {
             },
             isHidden: DataTypes.BOOLEAN,
             isDelete: DataTypes.BOOLEAN,
+            deadline: DataTypes.DATE,
+            isCompleted: DataTypes.BOOLEAN,
         },
         {
             sequelize,

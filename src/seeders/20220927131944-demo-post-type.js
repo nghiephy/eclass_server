@@ -42,6 +42,13 @@ module.exports = {
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
+                {
+                    key: 'CH',
+                    name: 'Câu hỏi',
+                    description: 'Câu hỏi trong một lớp học',
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                },
             ],
             {},
         );

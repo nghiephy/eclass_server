@@ -27,6 +27,13 @@ module.exports = {
                 isDelete: {
                     type: Sequelize.BOOLEAN,
                 },
+                isCompleted: {
+                    type: Sequelize.BOOLEAN,
+                },
+                deadline: {
+                    allowNull: true,
+                    type: Sequelize.DATE,
+                },
                 createdAt: {
                     allowNull: false,
                     type: Sequelize.DATE,
