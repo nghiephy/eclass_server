@@ -78,6 +78,11 @@ let createMaterial = async (req, res) => {
 
     try {
         const materialRes = await materialService.create(userId, dataInsert);
+
+        // Change column name id => postID
+        materialRes.dataValues.postId = materialRes.dataValues.id;
+        delete materialRes.dataValues.id;
+
         res.status(200).json({ message: 'success', materialRes: materialRes });
     } catch (err) {
         res.status(500).json({ message: 'fail', error: err });
@@ -122,6 +127,10 @@ let createExercise = async (req, res) => {
 
     try {
         const exerciseRes = await exerciseService.create(userId, dataInsert);
+
+        exerciseRes.dataValues.postId = exerciseRes.dataValues.id;
+        delete exerciseRes.dataValues.id;
+
         res.status(200).json({ message: 'success', exerciseRes: exerciseRes });
     } catch (err) {
         res.status(500).json({ message: 'fail', error: err });
@@ -175,6 +184,10 @@ let createQuestion = async (req, res) => {
 
     try {
         const questionRes = await questionService.create(userId, dataInsert);
+
+        questionRes.dataValues.postId = questionRes.dataValues.id;
+        delete questionRes.dataValues.id;
+
         res.status(200).json({ message: 'success', questionRes: questionRes });
     } catch (err) {
         res.status(500).json({ message: 'fail', error: err });

@@ -56,6 +56,44 @@ let create = (userId, data) => {
     });
 };
 
+let getDetail = (userId, postId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const materialData = await db.Post.findOne({
+                where: {
+                    id: postId,
+                    type: 'TL',
+                    isDelete: 0,
+                },
+                attributes: [
+                    ['id', 'postId'],
+                    ['class', 'classId'],
+                    'userId',
+                    'createdAt',
+                    'updatedAt',
+                    'deadline',
+                    'content',
+                    'type',
+                    'isCompleted',
+                    [sequelize.col('Material.title'), 'title'],
+                    [sequelize.col('Material.guide'), 'guide'],
+                ],
+                include: [
+                    {
+                        model: db.Material,
+                        attributes: [],
+                    },
+                ],
+                raw: true,
+            });
+            resolve(materialData);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = {
     create: create,
+    getDetail: getDetail,
 };
