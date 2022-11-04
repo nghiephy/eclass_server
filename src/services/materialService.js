@@ -12,6 +12,7 @@ let create = (userId, data) => {
                 class: data.classId,
                 content: data.title,
                 type: 'TL',
+                topicId: data.topicId !== 0 ? data.topicId : null,
                 isCompleted: 0,
                 isDelete: 0,
                 isHidden: 0,
@@ -23,7 +24,6 @@ let create = (userId, data) => {
                 postId: postId,
                 title: data.title,
                 guide: data.content,
-                topicId: data.topicId !== 0 ? data.topicId : null,
                 createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
                 updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
             });

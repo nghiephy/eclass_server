@@ -18,10 +18,6 @@ module.exports = {
                 guide: {
                     type: Sequelize.TEXT,
                 },
-                topicId: {
-                    allowNull: true,
-                    type: Sequelize.INTEGER,
-                },
                 createdAt: {
                     allowNull: false,
                     type: Sequelize.DATE,
@@ -38,15 +34,6 @@ module.exports = {
                     fields: ['postId'],
                     references: {
                         table: 'posts',
-                        field: 'id',
-                    },
-                });
-                queryInterface.addConstraint('materials', {
-                    type: 'FOREIGN KEY',
-                    name: 'FK_materials_topics',
-                    fields: ['topicId'],
-                    references: {
-                        table: 'topics',
                         field: 'id',
                     },
                 });

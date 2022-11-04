@@ -11,9 +11,6 @@ module.exports = (sequelize, DataTypes) => {
             Exercise.belongsTo(models.Post, {
                 foreignKey: 'postId',
             });
-            Exercise.belongsTo(models.Topic, {
-                foreignKey: 'topicId',
-            });
         }
     }
     Exercise.init(
@@ -21,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
             postId: DataTypes.INTEGER,
             title: DataTypes.STRING,
             guide: DataTypes.TEXT,
-            topicId: DataTypes.INTEGER,
             maxScore: DataTypes.INTEGER,
             isBlock: DataTypes.BOOLEAN,
             typeExe: DataTypes.STRING,

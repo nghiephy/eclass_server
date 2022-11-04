@@ -15,6 +15,10 @@ module.exports = {
                 class: {
                     type: Sequelize.INTEGER,
                 },
+                topicId: {
+                    allowNull: true,
+                    type: Sequelize.INTEGER,
+                },
                 content: {
                     type: Sequelize.TEXT,
                 },
@@ -69,6 +73,15 @@ module.exports = {
                     references: {
                         table: 'post_types',
                         field: 'key',
+                    },
+                });
+                queryInterface.addConstraint('posts', {
+                    type: 'FOREIGN KEY',
+                    name: 'FK_posts_topics',
+                    fields: ['topicId'],
+                    references: {
+                        table: 'topics',
+                        field: 'id',
                     },
                 });
             });

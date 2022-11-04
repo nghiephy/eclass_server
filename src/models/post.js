@@ -26,6 +26,9 @@ module.exports = (sequelize, DataTypes) => {
             Post.belongsTo(models.User, {
                 foreignKey: 'userId',
             });
+            Post.belongsTo(models.Topic, {
+                foreignKey: 'topicId',
+            });
             Post.belongsTo(models.Class, {
                 foreignKey: 'class',
             });
@@ -40,6 +43,7 @@ module.exports = (sequelize, DataTypes) => {
             userId: DataTypes.INTEGER,
             class: DataTypes.INTEGER,
             content: DataTypes.TEXT,
+            topicId: DataTypes.INTEGER,
             type: {
                 type: DataTypes.STRING,
                 allowNull: false,

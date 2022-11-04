@@ -11,9 +11,6 @@ module.exports = (sequelize, DataTypes) => {
             Material.belongsTo(models.Post, {
                 foreignKey: 'postId',
             });
-            Material.belongsTo(models.Topic, {
-                foreignKey: 'topicId',
-            });
         }
     }
     Material.init(
@@ -21,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
             postId: DataTypes.INTEGER,
             title: DataTypes.STRING,
             guide: DataTypes.TEXT,
-            topicId: DataTypes.INTEGER,
         },
         {
             sequelize,

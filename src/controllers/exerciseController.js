@@ -16,6 +16,19 @@ let getAll = async (req, res) => {
     }
 };
 
+let getViaTopic = async (req, res) => {
+    const userId = req.user.id;
+    let classId = req.params.classid;
+    let topicId = req.params.topic;
+
+    try {
+        const exerciseRes = await exerciseService.getViaTopic(userId, classId, topicId);
+        res.status(200).json({ message: 'success', exercises: exerciseRes });
+    } catch (err) {
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
 let createMaterial = async (req, res) => {
     const userId = req.user.id;
     let data = req.body;
@@ -95,7 +108,7 @@ let createExercise = async (req, res) => {
 
     try {
         const exerciseRes = await exerciseService.create(userId, dataInsert);
-        res.status(200).json({ message: 'success', dataInsert: exerciseRes });
+        res.status(200).json({ message: 'success', exerciseRes: exerciseRes });
     } catch (err) {
         res.status(500).json({ message: 'fail', error: err });
     }
@@ -105,4 +118,5 @@ module.exports = {
     getAll: getAll,
     createMaterial: createMaterial,
     createExercise: createExercise,
+    getViaTopic: getViaTopic,
 };

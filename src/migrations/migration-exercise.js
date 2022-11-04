@@ -18,9 +18,6 @@ module.exports = {
                 guide: {
                     type: Sequelize.TEXT,
                 },
-                topicId: {
-                    type: Sequelize.INTEGER,
-                },
                 maxScore: {
                     type: Sequelize.INTEGER,
                 },
@@ -46,15 +43,6 @@ module.exports = {
                     fields: ['postId'],
                     references: {
                         table: 'posts',
-                        field: 'id',
-                    },
-                });
-                queryInterface.addConstraint('exercises', {
-                    type: 'FOREIGN KEY',
-                    name: 'FK_exercises_topics',
-                    fields: ['topicId'],
-                    references: {
-                        table: 'topics',
                         field: 'id',
                     },
                 });

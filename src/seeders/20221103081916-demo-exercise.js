@@ -18,7 +18,6 @@ module.exports = {
                     postId: 4,
                     title: 'Bài tập chương 2 cơ bản',
                     guide: 'Các em xem tài liệu và làm bài tập trang 17 nhé!',
-                    topicId: 2,
                     maxScore: 100,
                     isBlock: false,
                     typeExe: 'text',

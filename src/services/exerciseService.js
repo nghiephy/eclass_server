@@ -17,9 +17,48 @@ let getAll = (userId, classId) => {
                     ['id', 'postId'],
                     ['class', 'classId'],
                     'userId',
-                    [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%d-%m-%Y %H:%i:%s'), 'createdAt'],
-                    [sequelize.fn('DATE_FORMAT', sequelize.col('updatedAt'), '%d-%m-%Y %H:%i:%s'), 'updatedAt'],
-                    [sequelize.fn('DATE_FORMAT', sequelize.col('deadline'), '%d-%m-%Y %H:%i:%s'), 'deadline'],
+                    // [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%d-%m-%Y %H:%i:%s'), 'createdAt'],
+                    // [sequelize.fn('DATE_FORMAT', sequelize.col('updatedAt'), '%d-%m-%Y %H:%i:%s'), 'updatedAt'],
+                    // [sequelize.fn('DATE_FORMAT', sequelize.col('deadline'), '%d-%m-%Y %H:%i:%s'), 'deadline'],
+                    'createdAt',
+                    'updatedAt',
+                    'deadline',
+                    'content',
+                    'isDelete',
+                    'isHidden',
+                    'type',
+                    'isCompleted',
+                ],
+                order: [['createdAt', 'DESC']],
+                raw: true,
+            });
+            resolve(exerciseData);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+let getViaTopic = (userId, classId, topicId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const exerciseData = await db.Post.findAll({
+                where: {
+                    class: classId,
+                    [Op.not]: [{ type: ['TB'] }],
+                    isDelete: 0,
+                    topicId: topicId,
+                },
+                attributes: [
+                    ['id', 'postId'],
+                    ['class', 'classId'],
+                    'userId',
+                    // [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%d-%m-%Y %H:%i:%s'), 'createdAt'],
+                    // [sequelize.fn('DATE_FORMAT', sequelize.col('updatedAt'), '%d-%m-%Y %H:%i:%s'), 'updatedAt'],
+                    // [sequelize.fn('DATE_FORMAT', sequelize.col('deadline'), '%d-%m-%Y %H:%i:%s'), 'deadline'],
+                    'createdAt',
+                    'updatedAt',
+                    'deadline',
                     'content',
                     'isDelete',
                     'isHidden',
@@ -43,7 +82,9 @@ let create = (userId, data) => {
                 userId: userId,
                 class: data.classId,
                 content: data.title,
+                deadline: data.deadline,
                 type: 'BT',
+                topicId: data.topicId !== 0 ? data.topicId : null,
                 isCompleted: 0,
                 isDelete: 0,
                 isHidden: 0,
@@ -55,7 +96,6 @@ let create = (userId, data) => {
                 postId: postId,
                 title: data.title,
                 guide: data.content,
-                topicId: data.topicId !== 0 ? data.topicId : null,
                 maxScore: data.maxScore,
                 isBlock: false,
                 typeExe: 'text',
@@ -94,4 +134,5 @@ let create = (userId, data) => {
 module.exports = {
     getAll: getAll,
     create: create,
+    getViaTopic: getViaTopic,
 };
