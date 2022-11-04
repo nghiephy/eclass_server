@@ -39,6 +39,46 @@ let getAll = (userId, classId) => {
     });
 };
 
+let getDetail = (userId, postId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const exerciseData = await db.Post.findOne({
+                where: {
+                    id: postId,
+                    type: 'BT',
+                    isDelete: 0,
+                },
+                attributes: [
+                    ['id', 'postId'],
+                    ['class', 'classId'],
+                    'userId',
+                    'createdAt',
+                    'updatedAt',
+                    'deadline',
+                    'content',
+                    'type',
+                    'isCompleted',
+                    [sequelize.col('Exercise.title'), 'title'],
+                    [sequelize.col('Exercise.guide'), 'guide'],
+                    [sequelize.col('Exercise.maxScore'), 'maxScore'],
+                    [sequelize.col('Exercise.isBlock'), 'isBlock'],
+                    [sequelize.col('Exercise.typeExe'), 'typeExe'],
+                ],
+                include: [
+                    {
+                        model: db.Exercise,
+                        attributes: [],
+                    },
+                ],
+                raw: true,
+            });
+            resolve(exerciseData);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 let getViaTopic = (userId, classId, topicId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -98,7 +138,7 @@ let create = (userId, data) => {
                 guide: data.content,
                 maxScore: data.maxScore,
                 isBlock: false,
-                typeExe: 'text',
+                typeExe: 'assignment',
                 createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
                 updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
             });
@@ -135,4 +175,5 @@ module.exports = {
     getAll: getAll,
     create: create,
     getViaTopic: getViaTopic,
+    getDetail: getDetail,
 };

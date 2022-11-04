@@ -33,7 +33,15 @@ let uploadMultiple = multer({ storage: storage }).array('files', 10);
 
 router.get('/get-all/:classid', middlewareController.verifyToken, exerciseController.getAll);
 router.get('/get-all/:classid/:topic', middlewareController.verifyToken, exerciseController.getViaTopic);
-router.post('/TL/create', middlewareController.verifyToken, uploadMultiple, exerciseController.createMaterial);
+router.get('/get-detail/:classid/:postid', middlewareController.verifyToken, exerciseController.getExercise);
+router.post(
+    '/TL/create/:classid',
+    middlewareController.verifyToken,
+    middlewareController.verifyTeacher,
+    uploadMultiple,
+    exerciseController.createMaterial,
+);
 router.post('/BT/create', middlewareController.verifyToken, uploadMultiple, exerciseController.createExercise);
+router.post('/CH/create', middlewareController.verifyToken, uploadMultiple, exerciseController.createQuestion);
 
 module.exports = router;
