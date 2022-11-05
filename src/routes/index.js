@@ -6,6 +6,7 @@ import commentRouter from './comment';
 import topicRouter from './topic';
 import exerciseRouter from './exercise';
 import materialRouter from './material';
+import questionRouter from './question';
 
 function routes(app) {
     app.use('/', siteRouter);
@@ -16,6 +17,7 @@ function routes(app) {
     app.use('/api/topic', topicRouter);
     app.use('/api/exercise', exerciseRouter);
     app.use('/api/material', materialRouter);
+    app.use('/api/question', questionRouter);
 }
 
 module.exports = routes;

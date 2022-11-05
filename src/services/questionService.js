@@ -27,7 +27,7 @@ let create = (userId, data) => {
                 guide: data.content,
                 maxScore: data.maxScore,
                 isBlock: false,
-                typeExe: 'question_text',
+                typeExe: data.answerList ? 'question_choice' : 'question_text',
                 createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
                 updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
             });
@@ -75,6 +75,66 @@ let create = (userId, data) => {
     });
 };
 
+let getDetail = (userId, postId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const exerciseData = await db.Post.findOne({
+                where: {
+                    id: postId,
+                    type: 'CH',
+                    isDelete: 0,
+                },
+                attributes: [
+                    ['id', 'postId'],
+                    ['class', 'classId'],
+                    'userId',
+                    'createdAt',
+                    'updatedAt',
+                    'deadline',
+                    'content',
+                    'type',
+                    'isCompleted',
+                    [sequelize.col('Exercise.id'), 'exerciseId'],
+                    [sequelize.col('Exercise.title'), 'title'],
+                    [sequelize.col('Exercise.guide'), 'guide'],
+                    [sequelize.col('Exercise.maxScore'), 'maxScore'],
+                    [sequelize.col('Exercise.isBlock'), 'isBlock'],
+                    [sequelize.col('Exercise.typeExe'), 'typeExe'],
+                ],
+                include: [
+                    {
+                        model: db.Exercise,
+                        attributes: [],
+                    },
+                ],
+                raw: true,
+            });
+            resolve(exerciseData);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+let getChoices = (userId, exerciseId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const choiceData = await db.Answer.findAll({
+                where: {
+                    exerciseId: exerciseId,
+                },
+                attributes: [['id', 'answerId'], 'exerciseId', 'createdAt', 'updatedAt', 'content', 'correct'],
+                raw: true,
+            });
+            resolve(choiceData);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = {
     create: create,
+    getDetail: getDetail,
+    getChoices: getChoices,
 };

@@ -58,6 +58,7 @@ let getDetail = (userId, postId) => {
                     'content',
                     'type',
                     'isCompleted',
+                    [sequelize.col('Exercise.id'), 'exerciseId'],
                     [sequelize.col('Exercise.title'), 'title'],
                     [sequelize.col('Exercise.guide'), 'guide'],
                     [sequelize.col('Exercise.maxScore'), 'maxScore'],
