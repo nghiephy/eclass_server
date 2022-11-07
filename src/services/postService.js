@@ -20,6 +20,7 @@ let createPost = (userId, data) => {
                 class: parseInt(data.classId),
                 content: data.content,
                 type: data.type,
+                isDelete: 0,
                 createdAt: `${timestamp}`,
                 updatedAt: `${timestamp}`,
             });
@@ -48,6 +49,7 @@ let getAnnouPost = (userId, classId) => {
                 where: {
                     class: classId,
                     type: 'TB',
+                    isDelete: false,
                 },
                 attributes: [
                     ['id', 'postId'],
@@ -73,6 +75,110 @@ let getAnnouPost = (userId, classId) => {
             resolve(postData);
         } catch (error) {
             reject(error);
+        }
+    });
+};
+
+let getAnnouDetail = (userId, postId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const postData = await db.Post.findOne({
+                where: {
+                    id: postId,
+                    type: 'TB',
+                },
+                attributes: [
+                    ['id', 'postId'],
+                    'updatedAt',
+                    'createdAt',
+                    ['class', 'classId'],
+                    'content',
+                    'isHidden',
+                    'isDelete',
+                ],
+                raw: true,
+            });
+            resolve(postData);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+let updateAnnouPost = (userId, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedRows = await db.Post.update(
+                {
+                    content: data.content,
+                    updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                },
+                {
+                    where: {
+                        id: data.postId,
+                    },
+                },
+            );
+
+            if (data.file_list.length > 0) {
+                data.file_list = data.file_list.map((item) => {
+                    return { postId: data.postId, createdAt: `${timestamp}`, updatedAt: `${timestamp}`, ...item };
+                });
+                const fileRes = await db.File.bulkCreate(data.file_list);
+            }
+            if (data.link_list.length > 0) {
+                data.link_list = data.link_list.map((item) => {
+                    return {
+                        postId: data.postId,
+                        createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        title: '',
+                        url: item,
+                    };
+                });
+                const linkRes = await db.Link.bulkCreate(data.link_list);
+            }
+
+            if (data.filesDeleted.length > 0) {
+                data.filesDeleted = data.filesDeleted.map((fileId) => {
+                    return parseInt(fileId);
+                });
+                const deletedRows = await db.File.destroy({
+                    where: { id: data.filesDeleted },
+                });
+            }
+            if (data.linksDeleted.length > 0) {
+                data.linksDeleted = data.linksDeleted.map((linkId) => {
+                    return parseInt(linkId);
+                });
+                const deletedRows = await db.Link.destroy({
+                    where: { id: data.linksDeleted },
+                });
+            }
+            resolve(updatedRows);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+let deleteAnnouPost = (userId, postId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedRows = await db.Post.update(
+                {
+                    isDelete: true,
+                },
+                {
+                    where: {
+                        id: postId,
+                    },
+                },
+            );
+
+            resolve(updatedRows);
+        } catch (e) {
+            reject(e);
         }
     });
 };
@@ -107,5 +213,8 @@ let getAttachment = (userId, postId) => {
 module.exports = {
     createPost: createPost,
     getAnnouPost: getAnnouPost,
+    updateAnnouPost: updateAnnouPost,
     getAttachment: getAttachment,
+    getAnnouDetail: getAnnouDetail,
+    deleteAnnouPost: deleteAnnouPost,
 };

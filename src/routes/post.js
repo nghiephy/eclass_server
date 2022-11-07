@@ -31,6 +31,8 @@ const storage = multer.diskStorage({
 let uploadMultiple = multer({ storage: storage }).array('files', 10);
 
 router.post('/create', middlewareController.verifyToken, uploadMultiple, postController.createPost);
+router.post('/update', middlewareController.verifyToken, uploadMultiple, postController.updatePost);
+router.post('/delete', middlewareController.verifyToken, uploadMultiple, postController.deletePost);
 router.get('/get-attachment/:id', middlewareController.verifyToken, postController.getAttachment);
 
 module.exports = router;
