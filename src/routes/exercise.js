@@ -32,6 +32,7 @@ const storage = multer.diskStorage({
 let uploadMultiple = multer({ storage: storage }).array('files', 10);
 
 router.get('/get-all/:classid', middlewareController.verifyToken, exerciseController.getAll);
+router.get('/get-submit-files/:exerciseId', middlewareController.verifyToken, exerciseController.getSubmitFiles);
 router.get('/get-all/:classid/:topic', middlewareController.verifyToken, exerciseController.getViaTopic);
 router.get('/get-detail/:classid/:postid', middlewareController.verifyToken, exerciseController.getExercise);
 router.post(
@@ -43,5 +44,7 @@ router.post(
 );
 router.post('/BT/create', middlewareController.verifyToken, uploadMultiple, exerciseController.createExercise);
 router.post('/CH/create', middlewareController.verifyToken, uploadMultiple, exerciseController.createQuestion);
+router.post('/update', middlewareController.verifyToken, uploadMultiple, exerciseController.updateAssignment);
+router.post('/submit', middlewareController.verifyToken, uploadMultiple, exerciseController.submitAssignment);
 
 module.exports = router;

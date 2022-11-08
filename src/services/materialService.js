@@ -75,6 +75,7 @@ let getDetail = (userId, postId) => {
                     'content',
                     'type',
                     'isCompleted',
+                    'topicId',
                     [sequelize.col('Material.title'), 'title'],
                     [sequelize.col('Material.guide'), 'guide'],
                 ],

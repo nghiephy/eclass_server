@@ -27,7 +27,7 @@ let create = (userId, data) => {
                 guide: data.content,
                 maxScore: data.maxScore,
                 isBlock: false,
-                typeExe: data.answerList ? 'question_choice' : 'question_text',
+                typeExe: data.typeExe,
                 createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
                 updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
             });
@@ -94,6 +94,7 @@ let getDetail = (userId, postId) => {
                     'content',
                     'type',
                     'isCompleted',
+                    'topicId',
                     [sequelize.col('Exercise.id'), 'exerciseId'],
                     [sequelize.col('Exercise.title'), 'title'],
                     [sequelize.col('Exercise.guide'), 'guide'],
@@ -112,6 +113,69 @@ let getDetail = (userId, postId) => {
             resolve(exerciseData);
         } catch (error) {
             reject(error);
+        }
+    });
+};
+
+let getAnswer = (userId, exerciseId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const submitting = await db.Submitting.findOne({
+                where: {
+                    exerciseId: exerciseId,
+                },
+                attributes: [
+                    'answer',
+                    'answerChoice',
+                    'createdAt',
+                    'updatedAt',
+                    [sequelize.col('Answer.id'), 'answerId'],
+                    [sequelize.col('Answer.correct'), 'correct'],
+                    [sequelize.col('Answer.content'), 'content'],
+                ],
+                include: [
+                    {
+                        model: db.Answer,
+                        attributes: [],
+                    },
+                ],
+                raw: true,
+            });
+
+            resolve(submitting);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+let submitQuestion = (userId, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedRows = await db.Post.update(
+                {
+                    isCompleted: true,
+                },
+                {
+                    where: {
+                        id: data.postId,
+                    },
+                },
+            );
+
+            const submittingRes = await db.Submitting.create({
+                userId: userId,
+                exerciseId: data.exerciseId,
+                isMarked: data.isMarked,
+                answer: data.answerText,
+                answerChoice: data.answerChoice,
+                createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+            });
+
+            resolve(submittingRes);
+        } catch (e) {
+            reject(e);
         }
     });
 };
@@ -137,4 +201,6 @@ module.exports = {
     create: create,
     getDetail: getDetail,
     getChoices: getChoices,
+    getAnswer: getAnswer,
+    submitQuestion: submitQuestion,
 };

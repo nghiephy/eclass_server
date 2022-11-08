@@ -122,7 +122,12 @@ let updateAnnouPost = (userId, data) => {
 
             if (data.file_list.length > 0) {
                 data.file_list = data.file_list.map((item) => {
-                    return { postId: data.postId, createdAt: `${timestamp}`, updatedAt: `${timestamp}`, ...item };
+                    return {
+                        postId: data.postId,
+                        createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        ...item,
+                    };
                 });
                 const fileRes = await db.File.bulkCreate(data.file_list);
             }

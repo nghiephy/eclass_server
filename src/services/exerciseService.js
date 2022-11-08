@@ -28,6 +28,7 @@ let getAll = (userId, classId) => {
                     'isHidden',
                     'type',
                     'isCompleted',
+                    'topicId',
                 ],
                 order: [['createdAt', 'DESC']],
                 raw: true,
@@ -58,6 +59,7 @@ let getDetail = (userId, postId) => {
                     'content',
                     'type',
                     'isCompleted',
+                    'topicId',
                     [sequelize.col('Exercise.id'), 'exerciseId'],
                     [sequelize.col('Exercise.title'), 'title'],
                     [sequelize.col('Exercise.guide'), 'guide'],
@@ -105,12 +107,177 @@ let getViaTopic = (userId, classId, topicId) => {
                     'isHidden',
                     'type',
                     'isCompleted',
+                    'topicId',
                 ],
                 order: [['createdAt', 'DESC']],
                 raw: true,
             });
             resolve(exerciseData);
         } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+let updateAssignment = (userId, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedRows = await db.Post.update(
+                {
+                    content: data.title,
+                    deadline: data.deadline,
+                    updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                },
+                {
+                    where: {
+                        id: data.postId,
+                    },
+                },
+            );
+
+            const updatedExercise = await db.Exercise.update(
+                {
+                    guide: data.content,
+                    title: data.title,
+                    updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                },
+                {
+                    where: {
+                        postId: data.postId,
+                    },
+                },
+            );
+
+            if (data.file_list.length > 0) {
+                data.file_list = data.file_list.map((item) => {
+                    return {
+                        postId: data.postId,
+                        createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        ...item,
+                    };
+                });
+                const fileRes = await db.File.bulkCreate(data.file_list);
+            }
+            if (data.link_list.length > 0) {
+                data.link_list = data.link_list.map((item) => {
+                    return {
+                        postId: data.postId,
+                        createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        title: '',
+                        url: item,
+                    };
+                });
+                const linkRes = await db.Link.bulkCreate(data.link_list);
+            }
+
+            if (data.filesDeleted.length > 0) {
+                data.filesDeleted = data.filesDeleted.map((fileId) => {
+                    return parseInt(fileId);
+                });
+                const deletedRows = await db.File.destroy({
+                    where: { id: data.filesDeleted },
+                });
+            }
+            if (data.linksDeleted.length > 0) {
+                data.linksDeleted = data.linksDeleted.map((linkId) => {
+                    return parseInt(linkId);
+                });
+                const deletedRows = await db.Link.destroy({
+                    where: { id: data.linksDeleted },
+                });
+            }
+            resolve(updatedRows);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+let submitAssignment = (userId, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedRows = await db.Post.update(
+                {
+                    isCompleted: true,
+                },
+                {
+                    where: {
+                        id: data.postId,
+                    },
+                },
+            );
+
+            const submittingRes = await db.Submitting.create({
+                userId: userId,
+                exerciseId: data.exerciseId,
+                isMarked: false,
+                createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+            });
+            const submitId = submittingRes.dataValues.id;
+
+            if (data.file_list.length > 0) {
+                data.file_list = data.file_list.map((item) => {
+                    return {
+                        submitId: submitId,
+                        createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        ...item,
+                    };
+                });
+                const submitFileRes = await db.Submit_File.bulkCreate(data.file_list);
+            }
+            resolve(submittingRes);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+let getSubmitFiles = (userId, exerciseId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const submitting = await db.Submitting.findOne({
+                where: {
+                    exerciseId: exerciseId,
+                },
+                raw: true,
+            });
+            console.log('submitId ----------: ', submitting);
+            const submitId = submitting.id;
+
+            const files = await db.Submit_File.findAll({
+                where: {
+                    submitId: submitId,
+                },
+                attributes: [['id', 'submitFileId'], 'name', 'url', 'type'],
+                raw: true,
+            });
+            resolve(files);
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+};
+
+let markExercise = (userId, submitId, score, comment) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const resultSubmit = await db.Result_Submit.create({
+                userId: userId,
+                submitId: submitId,
+                score: score,
+                comment: comment,
+                createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+            });
+
+            resolve(resultSubmit);
+        } catch (error) {
+            console.log(error);
             reject(error);
         }
     });
@@ -177,4 +344,8 @@ module.exports = {
     create: create,
     getViaTopic: getViaTopic,
     getDetail: getDetail,
+    updateAssignment: updateAssignment,
+    submitAssignment: submitAssignment,
+    getSubmitFiles: getSubmitFiles,
+    markExercise: markExercise,
 };

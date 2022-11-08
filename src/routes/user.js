@@ -43,7 +43,8 @@ router.post('/login', userController.handleLogin);
 router.post('/register', userController.handleRegister);
 router.get('/refresh', userController.refreshToken);
 router.post('/logout', userController.handleLogout);
-router.get('/getinfor', middlewareController.verifyToken, userController.handleGetInfor);
+router.get('/getinfor/:userId', middlewareController.verifyToken, userController.handleGetInfor);
+router.get('/get-all/:classId', middlewareController.verifyToken, userController.getAllViaClass);
 router.post('/update', middlewareController.verifyToken, uploadSingle, userController.handleUpdate);
 
 module.exports = router;

@@ -164,9 +164,41 @@ let handleUpdateInfor = (userId, data) => {
     });
 };
 
+let getMemberClass = (classId, role) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const memData = await db.Authorization.findAll({
+                where: {
+                    class: classId,
+                    role: role,
+                },
+                attributes: [
+                    'createdAt',
+                    'updatedAt',
+                    [sequelize.col('User.fullName'), 'fullName'],
+                    [sequelize.col('User.id'), 'userId'],
+                    [sequelize.col('User.avatar'), 'avatar'],
+                ],
+                include: [
+                    {
+                        model: db.User,
+                        attributes: [],
+                    },
+                ],
+                raw: true,
+            });
+
+            resolve(memData);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 module.exports = {
     handleUserLogin: handleUserLogin,
     handleCreateNewUser: handleCreateNewUser,
     handleGetInfor: handleGetInfor,
     handleUpdateInfor: handleUpdateInfor,
+    getMemberClass: getMemberClass,
 };

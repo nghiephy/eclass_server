@@ -32,5 +32,7 @@ const storage = multer.diskStorage({
 let uploadMultiple = multer({ storage: storage }).array('files', 10);
 
 router.get('/get-detail/:classid/:postid', middlewareController.verifyToken, questionController.getQuestion);
+router.get('/get-answer/:exerciseId', middlewareController.verifyToken, questionController.getAnswer);
+router.post('/submit', middlewareController.verifyToken, questionController.submitQuestion);
 
 module.exports = router;

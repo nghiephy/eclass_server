@@ -2,6 +2,7 @@ import db from '../models/index.js';
 import { QueryTypes } from 'sequelize';
 
 import exerciseService from '../services/exerciseService';
+import postService from '../services/postService';
 import materialService from '../services/materialService';
 import questionService from '../services/questionService';
 
@@ -194,6 +195,121 @@ let createQuestion = async (req, res) => {
     }
 };
 
+let updateAssignment = async (req, res) => {
+    const userId = req.user.id;
+    const data = req.body;
+    const linkArr = data.links.length > 0 ? data.links.split(',') : [];
+    const linksDeletedArr = data.linksDeleted.length > 0 ? data.linksDeleted.split(',') : [];
+    const filesDeletedArr = data.filesDeleted.length > 0 ? data.filesDeleted.split(',') : [];
+    const dataUpdate = {};
+
+    dataUpdate.link_list = linkArr;
+    dataUpdate.content = data.content;
+    dataUpdate.classId = parseInt(data.classId);
+    dataUpdate.postId = parseInt(data.postId);
+    dataUpdate.title = data.title;
+    dataUpdate.deadline = data.deadline;
+    dataUpdate.linksDeleted = linksDeletedArr;
+    dataUpdate.filesDeleted = filesDeletedArr;
+
+    if (req.fileValidationError) {
+        return res.send(req.fileValidationError);
+    }
+    if (req.files) {
+        const files = req.files;
+        const file_list = [];
+        let index, len;
+
+        // Loop through all the uploaded images and create images_list
+        for (index = 0, len = files.length; index < len; ++index) {
+            const item = {};
+            item.url = `/files/exercise/${files[index].filename}`;
+            item.name = files[index].originalname;
+            item.type = files[index].mimetype;
+            file_list.push(item);
+        }
+        dataUpdate.file_list = file_list;
+    }
+
+    try {
+        const response = await exerciseService.updateAssignment(userId, dataUpdate);
+        const updatedAssignment = await exerciseService.getDetail(userId, dataUpdate.postId);
+        const updatedAttachment = await postService.getAttachment(userId, dataUpdate.postId);
+
+        res.status(200).json({
+            message: 'success',
+            updatedAssignment: updatedAssignment,
+            updatedAttachment: updatedAttachment,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
+let submitAssignment = async (req, res) => {
+    const userId = req.user.id;
+    const data = req.body;
+    const dataSubmit = {};
+
+    dataSubmit.exerciseId = parseInt(data.exerciseId);
+    dataSubmit.postId = parseInt(data.postId);
+
+    if (req.fileValidationError) {
+        return res.send(req.fileValidationError);
+    }
+    if (req.files) {
+        const files = req.files;
+        const file_list = [];
+        let index, len;
+
+        // Loop through all the uploaded images and create images_list
+        for (index = 0, len = files.length; index < len; ++index) {
+            const item = {};
+            item.url = `/files/exercise/${files[index].filename}`;
+            item.name = files[index].originalname;
+            item.type = files[index].mimetype;
+            file_list.push(item);
+        }
+        dataSubmit.file_list = file_list;
+    }
+
+    console.log(dataSubmit);
+
+    try {
+        const response = await exerciseService.submitAssignment(userId, dataSubmit);
+
+        const submitFiles = await exerciseService.getSubmitFiles(userId, dataSubmit.exerciseId);
+
+        res.status(200).json({
+            message: 'success',
+            submitRes: response,
+            submitFiles: submitFiles,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
+let getSubmitFiles = async (req, res) => {
+    const userId = req.user.id;
+
+    const exerciseId = parseInt(req.params.exerciseId);
+
+    try {
+        const submitFiles = await exerciseService.getSubmitFiles(userId, exerciseId);
+
+        res.status(200).json({
+            message: 'success',
+            submitFiles: submitFiles,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
 module.exports = {
     getAll: getAll,
     createMaterial: createMaterial,
@@ -201,4 +317,7 @@ module.exports = {
     getViaTopic: getViaTopic,
     createQuestion: createQuestion,
     getExercise: getExercise,
+    updateAssignment: updateAssignment,
+    submitAssignment: submitAssignment,
+    getSubmitFiles: getSubmitFiles,
 };

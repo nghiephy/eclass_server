@@ -125,7 +125,7 @@ let handleLogout = async (req, res) => {
 };
 
 let handleGetInfor = async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.params.userId;
 
     try {
         const user = await userService.handleGetInfor(userId);
@@ -172,6 +172,21 @@ let handleUpdate = async (req, res) => {
     }
 };
 
+let getAllViaClass = async (req, res) => {
+    const userId = req.user.id;
+    const classId = parseInt(req.params.classId);
+
+    try {
+        const studentData = await userService.getMemberClass(classId, 'HS');
+        const teacherData = await userService.getMemberClass(classId, 'GV');
+
+        res.status(200).json({ message: 'success', studentData: studentData, teacherData: teacherData });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail' });
+    }
+};
+
 module.exports = {
     handleLogin: handleLogin,
     handleRegister: handleRegister,
@@ -179,4 +194,5 @@ module.exports = {
     handleLogout: handleLogout,
     handleGetInfor: handleGetInfor,
     handleUpdate: handleUpdate,
+    getAllViaClass: getAllViaClass,
 };
