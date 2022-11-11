@@ -23,14 +23,12 @@ let enrollClass = async (req, res) => {
     if (enrollKey) {
         try {
             const data = await classService.enrollClass(userId, enrollKey);
-            if (data === true) {
-                res.status(200).json({ message: 'enroll sccuessful', code: 0 });
-            }
+            res.status(200).json({ message: 'enroll sccuessful', code: 0, data: data });
         } catch (err) {
             if (err.name === 'SequelizeUniqueConstraintError') {
-                res.status(500).json({ message: 'you joined this class', code: 1 });
+                res.status(500).json({ message: 'you joined this class', code: 'joined' });
             } else {
-                res.status(500).json({ message: 'invalid key', code: 2 });
+                res.status(500).json({ message: 'invalid key', code: 'invalid' });
             }
         }
     } else {

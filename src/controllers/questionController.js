@@ -5,18 +5,32 @@ import questionService from '../services/questionService';
 import exerciseService from '../services/exerciseService';
 
 let getQuestion = async (req, res) => {
-    const userId = req.user.id;
+    let userId = req.user.id;
     let classId = parseInt(req.params.classid);
     let postId = parseInt(req.params.postid);
+    let checkUserId = userId;
+
+    if (req.query.userId) {
+        checkUserId = parseInt(req.query.userId);
+    }
 
     try {
         const questionRes = await questionService.getDetail(userId, postId);
+        const exerciseId = questionRes.exerciseId;
         let choiceRes = null;
+
+        const checkCompletedRes = await exerciseService.checkIsCompleted(checkUserId, exerciseId);
         if (questionRes.typeExe === 'question_choice') {
-            choiceRes = await questionService.getChoices(userId, questionRes.exerciseId);
+            choiceRes = await questionService.getChoices(checkUserId, questionRes.exerciseId);
         }
-        res.status(200).json({ message: 'success', question: questionRes, answerList: choiceRes });
+        res.status(200).json({
+            message: 'success',
+            question: questionRes,
+            answerList: choiceRes,
+            checkCompletedRes: checkCompletedRes,
+        });
     } catch (err) {
+        console.log(err);
         res.status(500).json({ message: 'fail', error: err });
     }
 };
@@ -24,9 +38,14 @@ let getQuestion = async (req, res) => {
 let getAnswer = async (req, res) => {
     const userId = req.user.id;
     let exerciseId = parseInt(req.params.exerciseId);
+    let checkUserId = userId;
+
+    if (req.query.userId) {
+        checkUserId = parseInt(req.query.userId);
+    }
 
     try {
-        const answerRes = await questionService.getAnswer(userId, exerciseId);
+        const answerRes = await questionService.getAnswer(checkUserId, exerciseId);
         res.status(200).json({ message: 'success', answerRes: answerRes });
     } catch (err) {
         res.status(500).json({ message: 'fail', error: err });
@@ -65,7 +84,13 @@ let submitQuestion = async (req, res) => {
             let score = parseInt(answer.correct) === 1 ? 100 : 0;
             const comment = '';
 
-            resultSubmitChoice = await exerciseService.markExercise(userId, submitId, score, comment);
+            resultSubmitChoice = await exerciseService.markExercise(
+                userId,
+                dataSubmit.postId,
+                submitId,
+                score,
+                comment,
+            );
         }
 
         res.status(200).json({

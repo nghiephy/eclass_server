@@ -75,7 +75,7 @@ let enrollClass = (userId, enrollKey) => {
                         type: QueryTypes.INSERT,
                     },
                 );
-                resolve(true);
+                resolve(classData);
             }
         } catch (error) {
             reject(error);

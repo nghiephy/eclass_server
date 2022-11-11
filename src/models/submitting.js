@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
             Submitting.hasMany(models.Submit_File, {
                 foreignKey: 'submitId',
             });
+            Submitting.hasOne(models.Result_Submit, {
+                foreignKey: 'submitId',
+            });
             Submitting.belongsTo(models.User, {
                 foreignKey: 'userId',
             });

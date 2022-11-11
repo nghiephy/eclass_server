@@ -242,12 +242,15 @@ let getSubmitFiles = (userId, exerciseId) => {
             const submitting = await db.Submitting.findOne({
                 where: {
                     exerciseId: exerciseId,
+                    userId: userId,
                 },
                 raw: true,
             });
-            console.log('submitId ----------: ', submitting);
-            const submitId = submitting.id;
-
+            const submitId = submitting?.id;
+            if (!submitId) {
+                resolve([]);
+                return;
+            }
             const files = await db.Submit_File.findAll({
                 where: {
                     submitId: submitId,
@@ -263,22 +266,163 @@ let getSubmitFiles = (userId, exerciseId) => {
     });
 };
 
-let markExercise = (userId, submitId, score, comment) => {
+let checkIsCompleted = (userId, exerciseId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const submitting = await db.Submitting.findOne({
+                where: {
+                    exerciseId: exerciseId,
+                    userId: userId,
+                },
+                attributes: [
+                    'userId',
+                    'exerciseId',
+                    'answer',
+                    'answerChoice',
+                    'createdAt',
+                    'updatedAt',
+                    [sequelize.col('Answer.id'), 'answerId'],
+                    [sequelize.col('Answer.correct'), 'correct'],
+                    [sequelize.col('Answer.content'), 'content'],
+                ],
+                include: [
+                    {
+                        model: db.Answer,
+                        attributes: [],
+                    },
+                ],
+                raw: true,
+            });
+            resolve(submitting);
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+};
+
+let markExercise = (userId, postId, submitId, score, comment) => {
     return new Promise(async (resolve, reject) => {
         try {
             const resultSubmit = await db.Result_Submit.create({
                 userId: userId,
+                postId: postId,
                 submitId: submitId,
                 score: score,
                 comment: comment,
                 createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
                 updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
             });
+            if (submitId) {
+                const updateMarked = await db.Submitting.update(
+                    {
+                        isMarked: true,
+                    },
+                    {
+                        where: {
+                            id: submitId,
+                        },
+                    },
+                );
+            }
 
             resolve(resultSubmit);
         } catch (error) {
             console.log(error);
             reject(error);
+        }
+    });
+};
+
+let getResultSubmit = (userId, postId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const exerciseRes = await db.Exercise.findOne({
+                where: {
+                    postId: postId,
+                },
+                raw: true,
+            });
+            const exerciseId = exerciseRes.id;
+
+            const submitting = await db.Submitting.findOne({
+                where: {
+                    exerciseId: exerciseId,
+                    userId: userId,
+                },
+                attributes: [
+                    ['id', 'submitId'],
+                    'userId',
+                    'answer',
+                    'answerChoice',
+                    'exerciseId',
+                    'isMarked',
+                    ['createdAt', 'submit_date'],
+                    ['updatedAt', 'submit_update_date'],
+                    [sequelize.col('Result_Submit.userId'), 'userSubmitId'],
+                    [sequelize.col('Result_Submit.score'), 'score'],
+                    [sequelize.col('Result_Submit.comment'), 'comment'],
+                    [sequelize.col('Result_Submit.createdAt'), 'marked_date'],
+                    [sequelize.col('Result_Submit.updatedAt'), 'marked_update_date'],
+                ],
+                include: [
+                    {
+                        model: db.Result_Submit,
+                        attributes: [],
+                    },
+                ],
+                raw: true,
+            });
+
+            resolve(submitting);
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+};
+
+let getMemberSubmit = (classId, postId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const memData = await db.Authorization.findAll({
+                where: {
+                    class: classId,
+                    role: 'HS',
+                },
+                attributes: [
+                    ['createdAt', 'joinedDate'],
+                    'updatedAt',
+                    [sequelize.col('User.fullName'), 'fullName'],
+                    [sequelize.col('User.id'), 'userId'],
+                    [sequelize.col('User.avatar'), 'avatar'],
+                    [sequelize.col('User.Result_Submits.submitId'), 'submitId'],
+                    [sequelize.col('User.Result_Submits.score'), 'score'],
+                    [sequelize.col('User.Result_Submits.comment'), 'comment'],
+                    [sequelize.col('User.Result_Submits.postId'), 'postId'],
+                    [sequelize.col('User.Result_Submits.createdAt'), 'submitedDate'],
+                ],
+                include: [
+                    {
+                        model: db.User,
+                        attributes: [],
+                        include: {
+                            model: db.Result_Submit,
+                            attributes: [],
+                            where: {
+                                postId: postId,
+                            },
+                            required: false,
+                        },
+                    },
+                ],
+                required: false,
+                raw: true,
+            });
+
+            resolve(memData);
+        } catch (e) {
+            reject(e);
         }
     });
 };
@@ -348,4 +492,7 @@ module.exports = {
     submitAssignment: submitAssignment,
     getSubmitFiles: getSubmitFiles,
     markExercise: markExercise,
+    checkIsCompleted: checkIsCompleted,
+    getResultSubmit: getResultSubmit,
+    getMemberSubmit: getMemberSubmit,
 };

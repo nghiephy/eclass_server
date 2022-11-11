@@ -21,10 +21,18 @@ let getExercise = async (req, res) => {
     const userId = req.user.id;
     let classId = parseInt(req.params.classid);
     let postId = parseInt(req.params.postid);
+    let checkUserId = userId;
+
+    if (req.query.userId) {
+        checkUserId = parseInt(req.query.userId);
+    }
 
     try {
         const exerciseRes = await exerciseService.getDetail(userId, postId);
-        res.status(200).json({ message: 'success', exercise: exerciseRes });
+        const exerciseId = exerciseRes.exerciseId;
+
+        const checkCompletedRes = await exerciseService.checkIsCompleted(checkUserId, exerciseId);
+        res.status(200).json({ message: 'success', exercise: exerciseRes, checkCompletedRes: checkCompletedRes });
     } catch (err) {
         res.status(500).json({ message: 'fail', error: err });
     }
@@ -294,15 +302,88 @@ let submitAssignment = async (req, res) => {
 
 let getSubmitFiles = async (req, res) => {
     const userId = req.user.id;
+    let checkUserId = userId;
+
+    if (req.query.userId) {
+        checkUserId = parseInt(req.query.userId);
+    }
 
     const exerciseId = parseInt(req.params.exerciseId);
 
     try {
-        const submitFiles = await exerciseService.getSubmitFiles(userId, exerciseId);
+        const submitFiles = await exerciseService.getSubmitFiles(checkUserId, exerciseId);
 
         res.status(200).json({
             message: 'success',
             submitFiles: submitFiles,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
+let handleMarkExercise = async (req, res) => {
+    const userId = req.user.id;
+    let checkUserId = userId;
+    const submitId = parseInt(req.body.submitId) || null;
+    const score = parseInt(req.body.score);
+    const postId = parseInt(req.body.postId);
+    const comment = req.body.comment;
+
+    if (req.body.userId) {
+        checkUserId = parseInt(req.body.userId);
+    }
+
+    try {
+        const markResponse = await exerciseService.markExercise(checkUserId, postId, submitId, score, comment);
+
+        res.status(200).json({
+            message: 'success',
+            markResponse: markResponse,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
+let getResultSubmit = async (req, res) => {
+    const userId = req.user.id;
+    let checkUserId = userId;
+
+    if (req.query.userId) {
+        checkUserId = parseInt(req.query.userId);
+    }
+
+    const postId = parseInt(req.params.postId);
+    // console.log('postId --------', postId);
+
+    try {
+        const resultSubmit = await exerciseService.getResultSubmit(checkUserId, postId);
+        // console.log('resultSubmit', resultSubmit);
+
+        res.status(200).json({
+            message: 'success',
+            resultSubmit: resultSubmit,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
+let handleGetMemberSubmit = async (req, res) => {
+    const userId = req.user.id;
+    const classId = parseInt(req.params.classId);
+    const postId = parseInt(req.params.postId);
+
+    try {
+        const memberSubmit = await exerciseService.getMemberSubmit(classId, postId);
+
+        res.status(200).json({
+            message: 'success',
+            memberSubmit: memberSubmit,
         });
     } catch (err) {
         console.log(err);
@@ -320,4 +401,7 @@ module.exports = {
     updateAssignment: updateAssignment,
     submitAssignment: submitAssignment,
     getSubmitFiles: getSubmitFiles,
+    getResultSubmit: getResultSubmit,
+    handleMarkExercise: handleMarkExercise,
+    handleGetMemberSubmit: handleGetMemberSubmit,
 };

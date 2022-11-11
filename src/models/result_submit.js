@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
             Result_Submit.belongsTo(models.User, {
                 foreignKey: 'userId',
             });
+            Result_Submit.belongsTo(models.Post, {
+                foreignKey: 'postId',
+            });
             Result_Submit.belongsTo(models.Submitting, {
                 foreignKey: 'submitId',
             });
@@ -19,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     Result_Submit.init(
         {
             userId: DataTypes.INTEGER,
+            postId: DataTypes.INTEGER,
             submitId: DataTypes.INTEGER,
             score: DataTypes.INTEGER,
             comment: DataTypes.TEXT,

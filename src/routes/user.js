@@ -45,6 +45,7 @@ router.get('/refresh', userController.refreshToken);
 router.post('/logout', userController.handleLogout);
 router.get('/getinfor/:userId', middlewareController.verifyToken, userController.handleGetInfor);
 router.get('/get-all/:classId', middlewareController.verifyToken, userController.getAllViaClass);
+router.get('/get-student/:classId', middlewareController.verifyToken, userController.getStudentViaClass);
 router.post('/update', middlewareController.verifyToken, uploadSingle, userController.handleUpdate);
 
 module.exports = router;

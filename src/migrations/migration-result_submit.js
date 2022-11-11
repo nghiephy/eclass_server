@@ -12,6 +12,9 @@ module.exports = {
                 userId: {
                     type: Sequelize.INTEGER,
                 },
+                postId: {
+                    type: Sequelize.INTEGER,
+                },
                 submitId: {
                     type: Sequelize.INTEGER,
                 },
@@ -46,6 +49,15 @@ module.exports = {
                     fields: ['submitId'],
                     references: {
                         table: 'submittings',
+                        field: 'id',
+                    },
+                });
+                queryInterface.addConstraint('result_submits', {
+                    type: 'FOREIGN KEY',
+                    name: 'FK_result_submits_posts',
+                    fields: ['postId'],
+                    references: {
+                        table: 'posts',
                         field: 'id',
                     },
                 });

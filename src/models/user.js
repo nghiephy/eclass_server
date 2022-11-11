@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
             User.hasMany(models.Comment, {
                 foreignKey: 'userId',
             });
+            User.hasMany(models.Result_Submit, {
+                foreignKey: 'userId',
+            });
             User.hasMany(models.Private_Comment, {
                 foreignKey: 'userId',
             });

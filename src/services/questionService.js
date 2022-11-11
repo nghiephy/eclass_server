@@ -123,6 +123,7 @@ let getAnswer = (userId, exerciseId) => {
             const submitting = await db.Submitting.findOne({
                 where: {
                     exerciseId: exerciseId,
+                    userId: userId,
                 },
                 attributes: [
                     'answer',

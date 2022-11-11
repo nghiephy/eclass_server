@@ -187,6 +187,20 @@ let getAllViaClass = async (req, res) => {
     }
 };
 
+let getStudentViaClass = async (req, res) => {
+    const userId = req.user.id;
+    const classId = parseInt(req.params.classId);
+
+    try {
+        const studentData = await userService.getMemberClass(classId, 'HS');
+
+        res.status(200).json({ message: 'success', studentData: studentData });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail' });
+    }
+};
+
 module.exports = {
     handleLogin: handleLogin,
     handleRegister: handleRegister,
@@ -195,4 +209,5 @@ module.exports = {
     handleGetInfor: handleGetInfor,
     handleUpdate: handleUpdate,
     getAllViaClass: getAllViaClass,
+    getStudentViaClass: getStudentViaClass,
 };

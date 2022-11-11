@@ -35,6 +35,12 @@ router.get('/get-all/:classid', middlewareController.verifyToken, exerciseContro
 router.get('/get-submit-files/:exerciseId', middlewareController.verifyToken, exerciseController.getSubmitFiles);
 router.get('/get-all/:classid/:topic', middlewareController.verifyToken, exerciseController.getViaTopic);
 router.get('/get-detail/:classid/:postid', middlewareController.verifyToken, exerciseController.getExercise);
+router.get('/get-result-submit/:postId', middlewareController.verifyToken, exerciseController.getResultSubmit);
+router.get(
+    '/get-member-submit/:classId/:postId',
+    middlewareController.verifyToken,
+    exerciseController.handleGetMemberSubmit,
+);
 router.post(
     '/TL/create/:classid',
     middlewareController.verifyToken,
@@ -46,5 +52,6 @@ router.post('/BT/create', middlewareController.verifyToken, uploadMultiple, exer
 router.post('/CH/create', middlewareController.verifyToken, uploadMultiple, exerciseController.createQuestion);
 router.post('/update', middlewareController.verifyToken, uploadMultiple, exerciseController.updateAssignment);
 router.post('/submit', middlewareController.verifyToken, uploadMultiple, exerciseController.submitAssignment);
+router.post('/mark-exercise', middlewareController.verifyToken, exerciseController.handleMarkExercise);
 
 module.exports = router;

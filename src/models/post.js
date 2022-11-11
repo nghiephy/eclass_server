@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
             Post.hasMany(models.File, {
                 foreignKey: 'postId',
             });
+            Post.hasMany(models.Result_Submit, {
+                foreignKey: 'postId',
+            });
             Post.belongsTo(models.User, {
                 foreignKey: 'userId',
             });
