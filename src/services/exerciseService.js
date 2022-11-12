@@ -334,6 +334,31 @@ let markExercise = (userId, postId, submitId, score, comment) => {
     });
 };
 
+let updateMarkExercise = (userId, postId, score, comment) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const resultSubmit = await db.Result_Submit.update(
+                {
+                    score: score,
+                    comment: comment,
+                    updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                },
+                {
+                    where: {
+                        userId: userId,
+                        postId: postId,
+                    },
+                },
+            );
+
+            resolve(resultSubmit);
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+};
+
 let getResultSubmit = (userId, postId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -427,6 +452,67 @@ let getMemberSubmit = (classId, postId) => {
     });
 };
 
+let getAllNameExercise = (classId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const nameExerciseList = await db.Post.findAll({
+                where: {
+                    class: classId,
+                    isDelete: 0,
+                    type: ['BT', 'CH'],
+                },
+                attributes: ['content', 'id', 'type', 'deadline'],
+                raw: true,
+            });
+
+            resolve(nameExerciseList);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+let getAllScoreExercise = (classId, userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allScoreRes = await db.Post.findAll({
+                where: {
+                    class: classId,
+                    isDelete: 0,
+                    type: ['BT', 'CH'],
+                },
+                attributes: [
+                    'content',
+                    ['id', 'postId'],
+                    'createdAt',
+                    [sequelize.col('Result_Submits.userId'), 'userId'],
+                    [sequelize.col('Result_Submits.score'), 'score'],
+                    [sequelize.col('Result_Submits.comment'), 'comment'],
+                    [sequelize.col('Result_Submits.submitId'), 'submitId'],
+                    [sequelize.col('Result_Submits.User.fullName'), 'fullName'],
+                    [sequelize.col('Result_Submits.User.id'), 'userId'],
+                ],
+                include: [
+                    {
+                        model: db.Result_Submit,
+                        attributes: [],
+                        include: [{ model: db.User, attributes: [] }],
+                        where: {
+                            userId: userId,
+                        },
+                        required: false,
+                    },
+                ],
+                raw: true,
+            });
+
+            resolve(allScoreRes);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 let create = (userId, data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -495,4 +581,7 @@ module.exports = {
     checkIsCompleted: checkIsCompleted,
     getResultSubmit: getResultSubmit,
     getMemberSubmit: getMemberSubmit,
+    getAllNameExercise: getAllNameExercise,
+    getAllScoreExercise: getAllScoreExercise,
+    updateMarkExercise: updateMarkExercise,
 };

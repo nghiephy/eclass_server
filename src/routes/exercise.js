@@ -36,6 +36,8 @@ router.get('/get-submit-files/:exerciseId', middlewareController.verifyToken, ex
 router.get('/get-all/:classid/:topic', middlewareController.verifyToken, exerciseController.getViaTopic);
 router.get('/get-detail/:classid/:postid', middlewareController.verifyToken, exerciseController.getExercise);
 router.get('/get-result-submit/:postId', middlewareController.verifyToken, exerciseController.getResultSubmit);
+router.get('/get-name-exercise/:classId', middlewareController.verifyToken, exerciseController.handleGetNameExercises);
+router.get('/get-all-score/:classId', middlewareController.verifyToken, exerciseController.handleGetScoreAllMem);
 router.get(
     '/get-member-submit/:classId/:postId',
     middlewareController.verifyToken,
@@ -53,5 +55,6 @@ router.post('/CH/create', middlewareController.verifyToken, uploadMultiple, exer
 router.post('/update', middlewareController.verifyToken, uploadMultiple, exerciseController.updateAssignment);
 router.post('/submit', middlewareController.verifyToken, uploadMultiple, exerciseController.submitAssignment);
 router.post('/mark-exercise', middlewareController.verifyToken, exerciseController.handleMarkExercise);
+router.post('/update-mark-exercise', middlewareController.verifyToken, exerciseController.handleUpdateMarkExercise);
 
 module.exports = router;

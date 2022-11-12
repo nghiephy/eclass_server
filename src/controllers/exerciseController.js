@@ -2,6 +2,7 @@ import db from '../models/index.js';
 import { QueryTypes } from 'sequelize';
 
 import exerciseService from '../services/exerciseService';
+import userService from '../services/userService';
 import postService from '../services/postService';
 import materialService from '../services/materialService';
 import questionService from '../services/questionService';
@@ -348,6 +349,30 @@ let handleMarkExercise = async (req, res) => {
     }
 };
 
+let handleUpdateMarkExercise = async (req, res) => {
+    const userId = req.user.id;
+    let checkUserId = userId;
+    const score = parseInt(req.body.score);
+    const postId = parseInt(req.body.postId);
+    const comment = req.body.comment;
+
+    if (req.body.userId) {
+        checkUserId = parseInt(req.body.userId);
+    }
+
+    try {
+        const markResponse = await exerciseService.updateMarkExercise(checkUserId, postId, score, comment);
+
+        res.status(200).json({
+            message: 'success',
+            markResponse: markResponse,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
 let getResultSubmit = async (req, res) => {
     const userId = req.user.id;
     let checkUserId = userId;
@@ -391,6 +416,47 @@ let handleGetMemberSubmit = async (req, res) => {
     }
 };
 
+let handleGetNameExercises = async (req, res) => {
+    const userId = req.user.id;
+    const classId = parseInt(req.params.classId);
+
+    try {
+        const nameExercise = await exerciseService.getAllNameExercise(classId);
+
+        res.status(200).json({
+            message: 'success',
+            nameExercise: nameExercise,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
+let handleGetScoreAllMem = async (req, res) => {
+    const userId = req.user.id;
+    const classId = parseInt(req.params.classId);
+
+    try {
+        const memList = await userService.getMemberClass(classId, 'HS');
+        const data = [];
+        for (let i = 0; i < memList.length; i++) {
+            const allScore = await exerciseService.getAllScoreExercise(classId, memList[i].userId);
+            data.push([{ fullName: memList[i].fullName, userId: memList[i].userId }, ...allScore]);
+        }
+
+        console.log(data);
+
+        res.status(200).json({
+            message: 'success',
+            allScore: data,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
 module.exports = {
     getAll: getAll,
     createMaterial: createMaterial,
@@ -404,4 +470,7 @@ module.exports = {
     getResultSubmit: getResultSubmit,
     handleMarkExercise: handleMarkExercise,
     handleGetMemberSubmit: handleGetMemberSubmit,
+    handleGetNameExercises: handleGetNameExercises,
+    handleGetScoreAllMem: handleGetScoreAllMem,
+    handleUpdateMarkExercise: handleUpdateMarkExercise,
 };
