@@ -82,10 +82,39 @@ let getAllPost = async (req, res) => {
     }
 };
 
+let handleCustomKey = async (req, res) => {
+    const userId = req.user.id;
+    const classId = parseInt(req.params.classId);
+    const value = req.body.value;
+    const code = req.body.code;
+
+    console.log('classId', classId);
+    console.log('value', value);
+
+    try {
+        if (code === 'blockKey') {
+            const updateRes = await classService.toggleBlockKey(classId, !value);
+        }
+        if (code === 'hiddenKey') {
+            const updateRes = await classService.toggleHiddenKey(classId, !value);
+        }
+        if (code === 'changeKey') {
+            const updateRes = await classService.changeEnrollKey(classId);
+        }
+
+        const classRes = await classService.getClass(userId, classId);
+
+        res.status(200).json({ message: 'ok', data: classRes });
+    } catch (error) {
+        res.status(200).json({ message: 'get class fail' });
+    }
+};
+
 module.exports = {
     getAllClass: getAllClass,
     enrollClass: enrollClass,
     createClass: createClass,
     getClassDetail: getClassDetail,
     getAllPost: getAllPost,
+    handleCustomKey: handleCustomKey,
 };

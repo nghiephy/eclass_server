@@ -33,6 +33,8 @@ module.exports = (sequelize, DataTypes) => {
             semester: DataTypes.STRING,
             room: DataTypes.STRING,
             enrollKey: DataTypes.STRING,
+            isBlockKey: DataTypes.BOOLEAN,
+            isHiddenKey: DataTypes.BOOLEAN,
             coverImg: DataTypes.STRING,
             primaryColor: DataTypes.STRING,
         },

@@ -28,6 +28,14 @@ module.exports = {
                     unique: true,
                     type: Sequelize.STRING,
                 },
+                isBlockKey: {
+                    defaultValue: false,
+                    type: Sequelize.BOOLEAN,
+                },
+                isHiddenKey: {
+                    defaultValue: false,
+                    type: Sequelize.BOOLEAN,
+                },
                 coverImg: {
                     type: Sequelize.STRING,
                 },

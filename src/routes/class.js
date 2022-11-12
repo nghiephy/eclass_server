@@ -9,5 +9,6 @@ router.get('/:id', middlewareController.verifyToken, classController.getClassDet
 router.get('/getpost/:id', middlewareController.verifyToken, classController.getAllPost);
 router.post('/enroll', middlewareController.verifyToken, classController.enrollClass);
 router.post('/create', middlewareController.verifyToken, classController.createClass);
+router.post('/custom-key/:classId', middlewareController.verifyToken, classController.handleCustomKey);
 
 module.exports = router;

@@ -52,6 +52,7 @@ let enrollClass = (userId, enrollKey) => {
             const classData = await db.Class.findOne({
                 where: {
                     enrollKey: enrollKey,
+                    isBlockKey: false,
                 },
                 attributes: ['id'],
             });
@@ -156,6 +157,66 @@ let getAllPost = (userId, classId) => {
     });
 };
 
+let toggleBlockKey = (classId, value) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updateRes = await db.Class.update(
+                {
+                    isBlockKey: value,
+                },
+                {
+                    where: {
+                        id: classId,
+                    },
+                },
+            );
+            resolve(updateRes);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+let toggleHiddenKey = (classId, value) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updateRes = await db.Class.update(
+                {
+                    isHiddenKey: value,
+                },
+                {
+                    where: {
+                        id: classId,
+                    },
+                },
+            );
+            resolve(updateRes);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+let changeEnrollKey = (classId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updateRes = await db.Class.update(
+                {
+                    enrollKey: makeKey(5) + getRandomInt(1000),
+                },
+                {
+                    where: {
+                        id: classId,
+                    },
+                },
+            );
+            resolve(updateRes);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 function makeKey(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -176,4 +237,7 @@ module.exports = {
     createClass: createClass,
     getClass: getClass,
     getAllPost: getAllPost,
+    toggleBlockKey: toggleBlockKey,
+    toggleHiddenKey: toggleHiddenKey,
+    changeEnrollKey: changeEnrollKey,
 };
