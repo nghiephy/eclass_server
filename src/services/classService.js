@@ -217,6 +217,27 @@ let changeEnrollKey = (classId) => {
     });
 };
 
+let handleUpdateCover = (classId, coverImgPath) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedRows = await db.Class.update(
+                {
+                    coverImg: coverImgPath,
+                },
+                {
+                    where: {
+                        id: classId,
+                    },
+                },
+            );
+
+            resolve(updatedRows);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 function makeKey(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -240,4 +261,5 @@ module.exports = {
     toggleBlockKey: toggleBlockKey,
     toggleHiddenKey: toggleHiddenKey,
     changeEnrollKey: changeEnrollKey,
+    handleUpdateCover: handleUpdateCover,
 };

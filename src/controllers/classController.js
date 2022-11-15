@@ -1,5 +1,7 @@
 import db from '../models/index.js';
 import { QueryTypes } from 'sequelize';
+const fs = require('fs');
+const path = require('path');
 
 import classService from '../services/classService';
 
@@ -82,14 +84,45 @@ let getAllPost = async (req, res) => {
     }
 };
 
+let handleUpdateCoverImg = async (req, res) => {
+    const userId = req.user.id;
+    const data = req.body;
+    let coverImgPath = '';
+    let coverOldPath = path.resolve(__dirname, '../public') + data.old_cover;
+    console.log(coverOldPath);
+
+    if (req.fileValidationError) {
+        return res.send(req.fileValidationError);
+    } else if (!req.file) {
+        coverImgPath = data.old_cover;
+    } else {
+        coverImgPath = '/img/cover/' + req.file.filename;
+
+        if (data.old_cover && data.old_cover !== '/img/cover/example_cover.jpg') {
+            fs.unlink(coverOldPath, (err) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+            });
+        }
+    }
+
+    try {
+        const respone = await classService.handleUpdateCover(parseInt(data.classId), coverImgPath);
+
+        res.status(200).json({ message: 'success', coverImgPath: coverImgPath });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail' });
+    }
+};
+
 let handleCustomKey = async (req, res) => {
     const userId = req.user.id;
     const classId = parseInt(req.params.classId);
     const value = req.body.value;
     const code = req.body.code;
-
-    console.log('classId', classId);
-    console.log('value', value);
 
     try {
         if (code === 'blockKey') {
@@ -117,4 +150,5 @@ module.exports = {
     getClassDetail: getClassDetail,
     getAllPost: getAllPost,
     handleCustomKey: handleCustomKey,
+    handleUpdateCoverImg: handleUpdateCoverImg,
 };
