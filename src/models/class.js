@@ -35,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
             enrollKey: DataTypes.STRING,
             isBlockKey: DataTypes.BOOLEAN,
             isHiddenKey: DataTypes.BOOLEAN,
+            isDeleted: DataTypes.BOOLEAN,
             coverImg: DataTypes.STRING,
             primaryColor: DataTypes.STRING,
         },

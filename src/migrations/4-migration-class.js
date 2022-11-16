@@ -36,6 +36,10 @@ module.exports = {
                     defaultValue: false,
                     type: Sequelize.BOOLEAN,
                 },
+                isDeleted: {
+                    defaultValue: false,
+                    type: Sequelize.BOOLEAN,
+                },
                 coverImg: {
                     type: Sequelize.STRING,
                 },

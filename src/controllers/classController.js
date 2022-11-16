@@ -38,6 +38,20 @@ let enrollClass = async (req, res) => {
     }
 };
 
+let handleUnEnrollClass = async (req, res) => {
+    const userId = req.user.id;
+    const unEnrollUserId = req.body.userId;
+    const classId = req.body.classId;
+
+    try {
+        const data = await classService.unEnrollClass(unEnrollUserId, classId);
+
+        res.status(200).json({ message: 'enroll sccuessful', data: data });
+    } catch (err) {
+        res.status(500).json({ message: 'unenroll class fail', code: '1' });
+    }
+};
+
 let createClass = async (req, res) => {
     const userId = req.user.id;
     const data = req.body;
@@ -118,6 +132,42 @@ let handleUpdateCoverImg = async (req, res) => {
     }
 };
 
+let handleUpdateInfor = async (req, res) => {
+    const userId = req.user.id;
+    const data = req.body;
+
+    console.log(data);
+
+    try {
+        const respone = await classService.updateInfor(parseInt(data.classId), data);
+
+        res.status(200).json({
+            message: 'success',
+            respone: respone,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail' });
+    }
+};
+
+let handleDeleteClass = async (req, res) => {
+    const userId = req.user.id;
+    const classId = parseInt(req.body.classId);
+
+    try {
+        const respone = await classService.deleteClass(classId);
+
+        res.status(200).json({
+            message: 'success',
+            respone: respone,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail' });
+    }
+};
+
 let handleCustomKey = async (req, res) => {
     const userId = req.user.id;
     const classId = parseInt(req.params.classId);
@@ -151,4 +201,7 @@ module.exports = {
     getAllPost: getAllPost,
     handleCustomKey: handleCustomKey,
     handleUpdateCoverImg: handleUpdateCoverImg,
+    handleUpdateInfor: handleUpdateInfor,
+    handleUnEnrollClass: handleUnEnrollClass,
+    handleDeleteClass: handleDeleteClass,
 };

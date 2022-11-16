@@ -53,8 +53,8 @@ let getAnnouPost = (userId, classId) => {
                 },
                 attributes: [
                     ['id', 'postId'],
-                    [sequelize.fn('DATE_FORMAT', sequelize.col('Post.createdAt'), '%d-%m-%Y %H:%i:%s'), 'createdAt'],
-                    [sequelize.fn('DATE_FORMAT', sequelize.col('Post.updatedAt'), '%d-%m-%Y %H:%i:%s'), 'updatedAt'],
+                    'updatedAt',
+                    'createdAt',
                     ['class', 'classId'],
                     'content',
                     'isHidden',

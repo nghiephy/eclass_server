@@ -45,6 +45,9 @@ router.get('/getpost/:id', middlewareController.verifyToken, classController.get
 router.post('/enroll', middlewareController.verifyToken, classController.enrollClass);
 router.post('/create', middlewareController.verifyToken, classController.createClass);
 router.post('/custom-key/:classId', middlewareController.verifyToken, classController.handleCustomKey);
+router.post('/update', middlewareController.verifyToken, classController.handleUpdateInfor);
+router.post('/unenroll', middlewareController.verifyToken, classController.handleUnEnrollClass);
+router.post('/delete', middlewareController.verifyToken, classController.handleDeleteClass);
 router.post('/update-cover', middlewareController.verifyToken, uploadSingle, classController.handleUpdateCoverImg);
 
 module.exports = router;

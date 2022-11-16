@@ -30,6 +30,9 @@ let getClasses = (userId, role) => {
                 include: [
                     {
                         model: db.Class,
+                        where: {
+                            isDeleted: false,
+                        },
                         attributes: [],
                         include: {
                             model: db.User,
@@ -84,6 +87,22 @@ let enrollClass = (userId, enrollKey) => {
     });
 };
 
+let unEnrollClass = (userId, classId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await db.Authorization.destroy({
+                where: {
+                    class: classId,
+                    userId: userId,
+                },
+            });
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 let createClass = (userId, data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -130,6 +149,7 @@ let getClass = (userId, classId) => {
             const classData = await db.Class.findOne({
                 where: {
                     id: classId,
+                    isDeleted: false,
                 },
                 include: {
                     model: db.Authorization,
@@ -238,6 +258,51 @@ let handleUpdateCover = (classId, coverImgPath) => {
     });
 };
 
+let updateInfor = (classId, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedRows = await db.Class.update(
+                {
+                    name: data.classname,
+                    room: data.room,
+                    semester: data.semester,
+                    topic: data.topic,
+                },
+                {
+                    where: {
+                        id: classId,
+                    },
+                },
+            );
+
+            resolve(updatedRows);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+let deleteClass = (classId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedRows = await db.Class.update(
+                {
+                    isDeleted: true,
+                },
+                {
+                    where: {
+                        id: classId,
+                    },
+                },
+            );
+
+            resolve(updatedRows);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 function makeKey(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -262,4 +327,7 @@ module.exports = {
     toggleHiddenKey: toggleHiddenKey,
     changeEnrollKey: changeEnrollKey,
     handleUpdateCover: handleUpdateCover,
+    updateInfor: updateInfor,
+    unEnrollClass: unEnrollClass,
+    deleteClass: deleteClass,
 };
