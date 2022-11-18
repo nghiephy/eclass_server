@@ -41,6 +41,8 @@ router.get('/get-all-score/:classId', middlewareController.verifyToken, exercise
 router.get('/get-not-submitted', middlewareController.verifyToken, exerciseController.handleGetNotSubmitted);
 router.get('/get-submitted', middlewareController.verifyToken, exerciseController.handleGetSubmitted);
 router.get('/get-out-date', middlewareController.verifyToken, exerciseController.handleGetOutDate);
+router.get('/get-not-marked', middlewareController.verifyToken, exerciseController.handleGetNotMarked);
+router.get('/get-marked', middlewareController.verifyToken, exerciseController.handleGetMarked);
 router.get(
     '/get-member-submit/:classId/:postId',
     middlewareController.verifyToken,

@@ -105,6 +105,23 @@ let deletePost = async (req, res) => {
     }
 };
 
+let handleToggleMarkPost = async (req, res) => {
+    const userId = req.user.id;
+    const data = req.body;
+    const postId = parseInt(data.postId);
+    const classId = parseInt(data.classId);
+    const value = data.value;
+
+    try {
+        const responseUpdate = await postService.toggleMarkedPost(classId, postId, value);
+
+        res.status(200).json({ message: 'success', responseUpdate: responseUpdate });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
 let getAttachment = async (req, res) => {
     const userId = req.user.id;
     const postId = req.params.id;
@@ -122,4 +139,5 @@ module.exports = {
     getAttachment: getAttachment,
     updatePost: updatePost,
     deletePost: deletePost,
+    handleToggleMarkPost: handleToggleMarkPost,
 };

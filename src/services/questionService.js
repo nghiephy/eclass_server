@@ -153,16 +153,16 @@ let getAnswer = (userId, exerciseId) => {
 let submitQuestion = (userId, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const updatedRows = await db.Post.update(
-                {
-                    isCompleted: true,
-                },
-                {
-                    where: {
-                        id: data.postId,
-                    },
-                },
-            );
+            // const updatedRows = await db.Post.update(
+            //     {
+            //         isCompleted: true,
+            //     },
+            //     {
+            //         where: {
+            //             id: data.postId,
+            //         },
+            //     },
+            // );
 
             const submittingRes = await db.Submitting.create({
                 userId: userId,

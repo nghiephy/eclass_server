@@ -86,6 +86,7 @@ let getExerciseViaClass = (userId, classId) => {
                     [sequelize.col('Post.type'), 'type'],
                     [sequelize.col('Post.deadline'), 'deadline'],
                     [sequelize.col('Post.class'), 'classId'],
+                    [sequelize.col('Post.isCompleted'), 'isCompleted'],
                     [sequelize.col('Submittings.id'), 'submitId'],
                     [sequelize.col('Submittings.createdAt'), 'submit_date'],
                     [sequelize.col('Submittings.isMarked'), 'isMarked'],
@@ -274,16 +275,16 @@ let updateAssignment = (userId, data) => {
 let submitAssignment = (userId, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const updatedRows = await db.Post.update(
-                {
-                    isCompleted: true,
-                },
-                {
-                    where: {
-                        id: data.postId,
-                    },
-                },
-            );
+            // const updatedRows = await db.Post.update(
+            //     {
+            //         isCompleted: true,
+            //     },
+            //     {
+            //         where: {
+            //             id: data.postId,
+            //         },
+            //     },
+            // );
 
             const submittingRes = await db.Submitting.create({
                 userId: userId,

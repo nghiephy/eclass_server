@@ -523,6 +523,48 @@ let handleGetOutDate = async (req, res) => {
     }
 };
 
+let handleGetNotMarked = async (req, res) => {
+    const userId = req.user.id;
+    const classId = req.query.classId;
+
+    console.log(classId);
+
+    try {
+        const exerciseRes = await exerciseService.getExerciseViaClass(userId, classId);
+
+        const dataExeRes = exerciseRes.filter((item) => item.isCompleted === 0);
+
+        res.status(200).json({
+            message: 'success',
+            exerciseRes: dataExeRes,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
+let handleGetMarked = async (req, res) => {
+    const userId = req.user.id;
+    const classId = req.query.classId;
+
+    console.log(classId);
+
+    try {
+        const exerciseRes = await exerciseService.getExerciseViaClass(userId, classId);
+
+        const dataExeRes = exerciseRes.filter((item) => item.isCompleted === 1);
+
+        res.status(200).json({
+            message: 'success',
+            exerciseRes: dataExeRes,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
 module.exports = {
     getAll: getAll,
     createMaterial: createMaterial,
@@ -542,4 +584,6 @@ module.exports = {
     handleGetNotSubmitted: handleGetNotSubmitted,
     handleGetSubmitted: handleGetSubmitted,
     handleGetOutDate: handleGetOutDate,
+    handleGetNotMarked: handleGetNotMarked,
+    handleGetMarked: handleGetMarked,
 };

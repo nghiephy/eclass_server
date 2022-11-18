@@ -215,6 +215,27 @@ let getAttachment = (userId, postId) => {
     });
 };
 
+let toggleMarkedPost = (classId, postId, value) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const updatedRows = await db.Post.update(
+                {
+                    isCompleted: value,
+                },
+                {
+                    where: {
+                        id: postId,
+                        class: classId,
+                    },
+                },
+            );
+            resolve(updatedRows);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 module.exports = {
     createPost: createPost,
     getAnnouPost: getAnnouPost,
@@ -222,4 +243,5 @@ module.exports = {
     getAttachment: getAttachment,
     getAnnouDetail: getAnnouDetail,
     deleteAnnouPost: deleteAnnouPost,
+    toggleMarkedPost: toggleMarkedPost,
 };
