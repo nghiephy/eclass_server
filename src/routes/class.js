@@ -40,6 +40,7 @@ const imageFilter = function (req, file, cb) {
 let uploadSingle = multer({ storage: storage, fileFilter: imageFilter }).single('cover_img');
 
 router.get('/getall', middlewareController.verifyToken, classController.getAllClass);
+router.get('/get-classes/:role', middlewareController.verifyToken, classController.handleGetClasses);
 router.get('/:id', middlewareController.verifyToken, classController.getClassDetail);
 router.get('/getpost/:id', middlewareController.verifyToken, classController.getAllPost);
 router.post('/enroll', middlewareController.verifyToken, classController.enrollClass);

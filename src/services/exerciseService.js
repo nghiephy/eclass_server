@@ -40,6 +40,82 @@ let getAll = (userId, classId) => {
     });
 };
 
+let getExerciseViaClass = (userId, classId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // const exerciseData = await db.Post.findAll({
+            //     where: {
+            //         class: classId,
+            //         [Op.not]: [{ type: ['TB', 'TL'] }],
+            //         isDelete: 0,
+            //     },
+            //     attributes: [
+            //         ['id', 'postId'],
+            //         ['class', 'classId'],
+            //         'userId',
+            //         'createdAt',
+            //         'updatedAt',
+            //         'deadline',
+            //         'content',
+            //         'isHidden',
+            //         'type',
+            //         'isCompleted',
+            //         'topicId',
+            //     ],
+            //     include: [
+            //         {
+            //             model: db.Result_Submit,
+            //             attributes: [],
+            //         },
+            //     ],
+            //     required: false,
+            //     order: [['createdAt', 'DESC']],
+            //     raw: true,
+            // });
+            const exerciseData = await db.Exercise.findAll({
+                attributes: [
+                    ['id', 'exerciseId'],
+                    'postId',
+                    'createdAt',
+                    'updatedAt',
+                    'title',
+                    'guide',
+                    'maxScore',
+                    'isBlock',
+                    'typeExe',
+                    [sequelize.col('Post.type'), 'type'],
+                    [sequelize.col('Post.deadline'), 'deadline'],
+                    [sequelize.col('Post.class'), 'classId'],
+                    [sequelize.col('Submittings.id'), 'submitId'],
+                    [sequelize.col('Submittings.createdAt'), 'submit_date'],
+                    [sequelize.col('Submittings.isMarked'), 'isMarked'],
+                ],
+                include: [
+                    {
+                        model: db.Post,
+                        attributes: [],
+                        where: {
+                            class: classId,
+                            isDelete: 0,
+                        },
+                    },
+                    {
+                        model: db.Submitting,
+                        attributes: [],
+                        required: false,
+                    },
+                ],
+                required: false,
+                order: [['createdAt', 'DESC']],
+                raw: true,
+            });
+            resolve(exerciseData);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 let getDetail = (userId, postId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -584,4 +660,5 @@ module.exports = {
     getAllNameExercise: getAllNameExercise,
     getAllScoreExercise: getAllScoreExercise,
     updateMarkExercise: updateMarkExercise,
+    getExerciseViaClass: getExerciseViaClass,
 };

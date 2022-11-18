@@ -6,6 +6,7 @@ import userService from '../services/userService';
 import postService from '../services/postService';
 import materialService from '../services/materialService';
 import questionService from '../services/questionService';
+import moment from 'moment';
 
 let getAll = async (req, res) => {
     const userId = req.user.id;
@@ -457,6 +458,71 @@ let handleGetScoreAllMem = async (req, res) => {
     }
 };
 
+let handleGetNotSubmitted = async (req, res) => {
+    const userId = req.user.id;
+    const classId = req.query.classId;
+
+    console.log(classId);
+
+    try {
+        const exerciseRes = await exerciseService.getExerciseViaClass(userId, classId);
+
+        const notSubmittedRes = exerciseRes.filter((item) => item.submitId === null);
+
+        res.status(200).json({
+            message: 'success',
+            exerciseRes: notSubmittedRes,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
+let handleGetSubmitted = async (req, res) => {
+    const userId = req.user.id;
+    const classId = req.query.classId;
+
+    console.log(classId);
+
+    try {
+        const exerciseRes = await exerciseService.getExerciseViaClass(userId, classId);
+
+        const submittedRes = exerciseRes.filter((item) => item.submitId !== null);
+
+        res.status(200).json({
+            message: 'success',
+            exerciseRes: submittedRes,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
+let handleGetOutDate = async (req, res) => {
+    const userId = req.user.id;
+    const classId = req.query.classId;
+
+    console.log(classId);
+
+    try {
+        const exerciseRes = await exerciseService.getExerciseViaClass(userId, classId);
+
+        const notSubmittedRes = exerciseRes.filter(
+            (item) => item.submitId === null && moment(item.deadline) < moment(),
+        );
+
+        res.status(200).json({
+            message: 'success',
+            exerciseRes: notSubmittedRes,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail', error: err });
+    }
+};
+
 module.exports = {
     getAll: getAll,
     createMaterial: createMaterial,
@@ -473,4 +539,7 @@ module.exports = {
     handleGetNameExercises: handleGetNameExercises,
     handleGetScoreAllMem: handleGetScoreAllMem,
     handleUpdateMarkExercise: handleUpdateMarkExercise,
+    handleGetNotSubmitted: handleGetNotSubmitted,
+    handleGetSubmitted: handleGetSubmitted,
+    handleGetOutDate: handleGetOutDate,
 };

@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
             Exercise.hasMany(models.Answer, {
                 foreignKey: 'exerciseId',
             });
+            Exercise.hasMany(models.Submitting, {
+                foreignKey: 'exerciseId',
+            });
             Exercise.belongsTo(models.Post, {
                 foreignKey: 'postId',
             });

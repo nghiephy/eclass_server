@@ -193,6 +193,19 @@ let handleCustomKey = async (req, res) => {
     }
 };
 
+let handleGetClasses = async (req, res) => {
+    const userId = req.user.id;
+    const role = req.params.role;
+
+    try {
+        const classRes = await classService.getClasses(userId, role);
+
+        res.status(200).json({ message: 'ok', data: classRes });
+    } catch (error) {
+        res.status(200).json({ message: 'get class fail' });
+    }
+};
+
 module.exports = {
     getAllClass: getAllClass,
     enrollClass: enrollClass,
@@ -204,4 +217,5 @@ module.exports = {
     handleUpdateInfor: handleUpdateInfor,
     handleUnEnrollClass: handleUnEnrollClass,
     handleDeleteClass: handleDeleteClass,
+    handleGetClasses: handleGetClasses,
 };

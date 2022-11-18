@@ -38,6 +38,9 @@ router.get('/get-detail/:classid/:postid', middlewareController.verifyToken, exe
 router.get('/get-result-submit/:postId', middlewareController.verifyToken, exerciseController.getResultSubmit);
 router.get('/get-name-exercise/:classId', middlewareController.verifyToken, exerciseController.handleGetNameExercises);
 router.get('/get-all-score/:classId', middlewareController.verifyToken, exerciseController.handleGetScoreAllMem);
+router.get('/get-not-submitted', middlewareController.verifyToken, exerciseController.handleGetNotSubmitted);
+router.get('/get-submitted', middlewareController.verifyToken, exerciseController.handleGetSubmitted);
+router.get('/get-out-date', middlewareController.verifyToken, exerciseController.handleGetOutDate);
 router.get(
     '/get-member-submit/:classId/:postId',
     middlewareController.verifyToken,
