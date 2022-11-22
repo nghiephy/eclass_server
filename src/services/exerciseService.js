@@ -137,6 +137,7 @@ let getDetail = (userId, postId) => {
                     'type',
                     'isCompleted',
                     'topicId',
+                    [sequelize.col('Class.name'), 'className'],
                     [sequelize.col('Exercise.id'), 'exerciseId'],
                     [sequelize.col('Exercise.title'), 'title'],
                     [sequelize.col('Exercise.guide'), 'guide'],
@@ -147,6 +148,10 @@ let getDetail = (userId, postId) => {
                 include: [
                     {
                         model: db.Exercise,
+                        attributes: [],
+                    },
+                    {
+                        model: db.Class,
                         attributes: [],
                     },
                 ],
