@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
             Post.hasOne(models.Exercise, {
                 foreignKey: 'postId',
             });
+            Post.hasOne(models.Exam, {
+                foreignKey: 'postId',
+            });
             Post.hasMany(models.Comment, {
                 foreignKey: 'postId',
             });

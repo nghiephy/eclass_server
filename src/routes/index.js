@@ -7,6 +7,7 @@ import topicRouter from './topic';
 import exerciseRouter from './exercise';
 import materialRouter from './material';
 import questionRouter from './question';
+import examRouter from './exam';
 
 function routes(app) {
     app.use('/', siteRouter);
@@ -18,6 +19,7 @@ function routes(app) {
     app.use('/api/exercise', exerciseRouter);
     app.use('/api/material', materialRouter);
     app.use('/api/question', questionRouter);
+    app.use('/api/exam', examRouter);
 }
 
 module.exports = routes;
