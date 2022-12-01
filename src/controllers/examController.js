@@ -36,6 +36,22 @@ let getAllExam = async (req, res) => {
     }
 };
 
+let handleGetDetail = async (req, res) => {
+    const userId = req.user.id;
+    const postId = req.params.postId;
+
+    try {
+        const examDetailRes = await examService.getDetail(userId, postId);
+        const examId = examDetailRes.examId;
+        const questionListRes = await examService.getQuestionList(userId, examId);
+        console.log(questionListRes);
+        res.status(200).json({ message: 'success', data: examDetailRes, questionListRes: questionListRes });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail' });
+    }
+};
+
 let handleDeleteExam = async (req, res) => {
     const userId = req.user.id;
     const postId = req.body.postId;
@@ -50,8 +66,26 @@ let handleDeleteExam = async (req, res) => {
     }
 };
 
+let handleUpdateExam = async (req, res) => {
+    const userId = req.user.id;
+    const dataUpdate = req.body;
+
+    console.log(dataUpdate);
+
+    try {
+        const updateRes = await examService.updateExam(userId, dataUpdate);
+
+        res.status(200).json({ message: 'success', data: updateRes });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail' });
+    }
+};
+
 module.exports = {
     createExam: createExam,
     getAllExam: getAllExam,
     handleDeleteExam: handleDeleteExam,
+    handleGetDetail: handleGetDetail,
+    handleUpdateExam: handleUpdateExam,
 };

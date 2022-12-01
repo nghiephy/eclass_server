@@ -41,6 +41,8 @@ let uploadSingle = multer({ storage: storage, fileFilter: imageFilter }).single(
 
 router.post('/create', middlewareController.verifyToken, examController.createExam);
 router.post('/delete', middlewareController.verifyToken, examController.handleDeleteExam);
+router.post('/update', middlewareController.verifyToken, examController.handleUpdateExam);
 router.get('/get-all/:classId', middlewareController.verifyToken, examController.getAllExam);
+router.get('/detail/:postId', middlewareController.verifyToken, examController.handleGetDetail);
 
 module.exports = router;
