@@ -10,7 +10,7 @@ let getAll = (userId, classId) => {
             const exerciseData = await db.Post.findAll({
                 where: {
                     class: classId,
-                    [Op.not]: [{ type: ['TB'] }],
+                    [Op.not]: [{ type: ['TB', 'KT'] }],
                     isDelete: 0,
                 },
                 attributes: [
@@ -170,7 +170,7 @@ let getViaTopic = (userId, classId, topicId) => {
             const exerciseData = await db.Post.findAll({
                 where: {
                     class: classId,
-                    [Op.not]: [{ type: ['TB'] }],
+                    [Op.not]: [{ type: ['TB', 'KT'] }],
                     isDelete: 0,
                     topicId: topicId,
                 },

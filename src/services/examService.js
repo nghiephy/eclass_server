@@ -95,11 +95,21 @@ let getAllExam = (userId, classId) => {
                     [sequelize.col('Exam.requirePass'), 'requirePass'],
                     [sequelize.col('Exam.startedAt'), 'startedAt'],
                     [sequelize.col('Exam.finishedAt'), 'finishedAt'],
+                    [sequelize.col('Exam.Takes.status'), 'status'],
+                    [sequelize.col('Exam.Takes.score'), 'score'],
+                    [sequelize.col('Exam.Takes.startedAt'), 'doStartedAt'],
+                    [sequelize.col('Exam.Takes.finishedAt'), 'doFinishedAt'],
                 ],
                 include: [
                     {
                         model: db.Exam,
                         attributes: [],
+                        include: [
+                            {
+                                model: db.Take,
+                                attributes: [],
+                            },
+                        ],
                     },
                 ],
                 raw: true,
@@ -207,6 +217,7 @@ let updateExam = (userId, data) => {
             const updatedRows = await db.Post.update(
                 {
                     content: data.title,
+                    deadline: data.time,
                     updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
                 },
                 {
@@ -278,6 +289,101 @@ let updateExam = (userId, data) => {
     });
 };
 
+let joinExam = (userId, password, postId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const joinRes = await db.Exam.findOne({
+                where: {
+                    password: password,
+                    postId: postId,
+                },
+                attributes: ['postId', ['id', 'examId'], 'startedAt', 'finishedAt'],
+            });
+            const findTakeRes = await db.Take.findOne({
+                where: {
+                    userId: userId,
+                    examId: joinRes.dataValues.examId,
+                },
+            });
+            let takeRes = null;
+
+            if (!joinRes) {
+                reject({ code: 'INVALID_KEY' });
+            } else {
+                if (
+                    moment(joinRes.dataValues.startedAt).diff(moment(), 'minutes') < 0 &&
+                    moment(joinRes.dataValues.finishedAt).diff(moment(), 'minutes') > 0
+                ) {
+                    if (findTakeRes) {
+                        await db.Take.update(
+                            {
+                                startedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                            },
+                            {
+                                where: {
+                                    id: findTakeRes.dataValues.id,
+                                },
+                            },
+                        );
+                    } else {
+                        takeRes = await db.Take.create({
+                            userId: userId,
+                            examId: joinRes.dataValues.examId,
+                            status: 0,
+                            startedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                            finishedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        });
+                    }
+                }
+                resolve(takeRes || findTakeRes);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+let updateResult = (userId, data, answerList) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const findTakeRes = await db.Take.findOne({
+                where: {
+                    id: data.takeId,
+                },
+            });
+            const finishedAt = moment(findTakeRes.dataValues.startedAt).add(parseInt(data.timeDone), 'seconds');
+
+            const updatedRows = await db.Take.update(
+                {
+                    status: 1,
+                    score: data.score,
+                    finishedAt: finishedAt,
+                },
+                {
+                    where: {
+                        id: data.takeId,
+                    },
+                },
+            );
+
+            const answerListData = answerList.map((answer) => {
+                return {
+                    takeId: data.takeId,
+                    exquesId: answer.exquesId,
+                    exanswerId: answer.exanswerId,
+                    createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+                };
+            });
+
+            const answerListRes = await db.Take_Answer.bulkCreate(answerListData);
+            resolve(updatedRows);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = {
     createExam: createExam,
     getAllExam: getAllExam,
@@ -285,4 +391,6 @@ module.exports = {
     getDetail: getDetail,
     getQuestionList: getQuestionList,
     updateExam: updateExam,
+    joinExam: joinExam,
+    updateResult: updateResult,
 };

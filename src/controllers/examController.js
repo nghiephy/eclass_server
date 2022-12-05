@@ -10,8 +10,6 @@ let createExam = async (req, res) => {
     const userId = req.user.id;
     const data = req.body;
 
-    console.log(data);
-
     try {
         const dataRes = await examService.createExam(userId, data);
 
@@ -44,7 +42,6 @@ let handleGetDetail = async (req, res) => {
         const examDetailRes = await examService.getDetail(userId, postId);
         const examId = examDetailRes.examId;
         const questionListRes = await examService.getQuestionList(userId, examId);
-        console.log(questionListRes);
         res.status(200).json({ message: 'success', data: examDetailRes, questionListRes: questionListRes });
     } catch (err) {
         console.log(err);
@@ -82,10 +79,43 @@ let handleUpdateExam = async (req, res) => {
     }
 };
 
+let handleJoinExam = async (req, res) => {
+    const userId = req.body.userId;
+    const postId = req.body.postId;
+    const password = req.body.password;
+
+    try {
+        const joinRes = await examService.joinExam(userId, password, postId);
+
+        console.log('join-----', joinRes);
+
+        res.status(200).json({ message: 'success', data: joinRes });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail' });
+    }
+};
+
+const handleUpdateResult = async (req, res) => {
+    const userId = req.body.userId;
+    const { dataUpdate, answerList } = req.body;
+
+    try {
+        const joinRes = await examService.updateResult(userId, dataUpdate, answerList);
+
+        res.status(200).json({ message: 'success', data: joinRes });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'fail' });
+    }
+};
+
 module.exports = {
     createExam: createExam,
     getAllExam: getAllExam,
     handleDeleteExam: handleDeleteExam,
     handleGetDetail: handleGetDetail,
     handleUpdateExam: handleUpdateExam,
+    handleJoinExam: handleJoinExam,
+    handleUpdateResult: handleUpdateResult,
 };
