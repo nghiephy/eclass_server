@@ -85,6 +85,7 @@ let getAllExam = (userId, classId) => {
                     'deadline',
                     'createdAt',
                     'updatedAt',
+                    [sequelize.col('Class.name'), 'classNameExam'],
                     [sequelize.col('Exam.id'), 'examId'],
                     [sequelize.col('Exam.postId'), 'postId'],
                     [sequelize.col('Exam.title'), 'title'],
@@ -111,7 +112,12 @@ let getAllExam = (userId, classId) => {
                             },
                         ],
                     },
+                    {
+                        model: db.Class,
+                        attributes: [],
+                    },
                 ],
+                order: [['deadline', 'DESC']],
                 raw: true,
             });
 

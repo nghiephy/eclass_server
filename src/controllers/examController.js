@@ -23,9 +23,14 @@ let createExam = async (req, res) => {
 let getAllExam = async (req, res) => {
     const userId = req.user.id;
     const classId = req.params.classId;
+    const classIdArr = req.query.classId;
+
+    const classIdSearch = classId === 'null' ? classIdArr : classId;
+
+    console.log('classIdSearch----', classIdSearch);
 
     try {
-        const allExamRes = await examService.getAllExam(userId, classId);
+        const allExamRes = await examService.getAllExam(userId, classIdSearch);
 
         res.status(200).json({ message: 'success', data: allExamRes });
     } catch (err) {
@@ -86,8 +91,6 @@ let handleJoinExam = async (req, res) => {
 
     try {
         const joinRes = await examService.joinExam(userId, password, postId);
-
-        console.log('join-----', joinRes);
 
         res.status(200).json({ message: 'success', data: joinRes });
     } catch (err) {

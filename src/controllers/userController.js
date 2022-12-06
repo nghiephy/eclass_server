@@ -162,6 +162,8 @@ let handleUpdate = async (req, res) => {
 
     data.avatarPath = avatarPath;
 
+    console.log(data);
+
     try {
         const respone = await userService.handleUpdateInfor(userId, data);
 

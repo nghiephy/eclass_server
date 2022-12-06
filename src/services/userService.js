@@ -72,6 +72,8 @@ let handleCreateNewUser = async (data) => {
                     fullName: data.fullname,
                     email: data.email,
                     locale: 'Vi',
+                    avatar: '/img/avatar/no_avatar.jpg',
+                    birthday: moment().format('YYYY-MM-DD'),
                 });
                 const usersAuthIntance = await db.Users_Auth.create({
                     username: data.username,
