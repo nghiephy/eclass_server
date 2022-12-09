@@ -41,7 +41,12 @@ let uploadSingle = multer({ storage: storage, fileFilter: imageFilter }).single(
 
 router.get('/getall', middlewareController.verifyToken, classController.getAllClass);
 router.get('/get-classes/:role', middlewareController.verifyToken, classController.handleGetClasses);
-router.get('/:id', middlewareController.verifyToken, classController.getClassDetail);
+router.get(
+    '/:id',
+    middlewareController.verifyToken,
+    middlewareController.verifyMemberClass,
+    classController.getClassDetail,
+);
 router.get('/getpost/:id', middlewareController.verifyToken, classController.getAllPost);
 router.post('/enroll', middlewareController.verifyToken, classController.enrollClass);
 router.post('/create', middlewareController.verifyToken, classController.createClass);

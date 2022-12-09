@@ -22,6 +22,24 @@ let verifyRoleUser = (userId, classId, role) => {
     });
 };
 
+let verifyMemberClass = (userId, classId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await db.Authorization.findOne({
+                where: {
+                    userId: userId,
+                    class: classId,
+                },
+                attributes: { exclude: ['id'] },
+            });
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = {
     verifyRoleUser: verifyRoleUser,
+    verifyMemberClass: verifyMemberClass,
 };

@@ -109,6 +109,10 @@ let getAllExam = (userId, classId) => {
                             {
                                 model: db.Take,
                                 attributes: [],
+                                where: {
+                                    userId: userId,
+                                },
+                                required: false,
                             },
                         ],
                     },

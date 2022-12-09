@@ -31,13 +31,23 @@ const storage = multer.diskStorage({
 
 let uploadMultiple = multer({ storage: storage }).array('files', 10);
 
-router.get('/get-all/:classid', middlewareController.verifyToken, exerciseController.getAll);
+router.get(
+    '/get-all/:classid',
+    middlewareController.verifyToken,
+    middlewareController.verifyRole,
+    exerciseController.getAll,
+);
 router.get('/get-submit-files/:exerciseId', middlewareController.verifyToken, exerciseController.getSubmitFiles);
 router.get('/get-all/:classid/:topic', middlewareController.verifyToken, exerciseController.getViaTopic);
 router.get('/get-detail/:classid/:postid', middlewareController.verifyToken, exerciseController.getExercise);
 router.get('/get-result-submit/:postId', middlewareController.verifyToken, exerciseController.getResultSubmit);
 router.get('/get-name-exercise/:classId', middlewareController.verifyToken, exerciseController.handleGetNameExercises);
-router.get('/get-all-score/:classId', middlewareController.verifyToken, exerciseController.handleGetScoreAllMem);
+router.get(
+    '/get-all-score/:classId',
+    middlewareController.verifyToken,
+    middlewareController.verifyRole,
+    exerciseController.handleGetScoreAllMem,
+);
 router.get('/get-not-submitted', middlewareController.verifyToken, exerciseController.handleGetNotSubmitted);
 router.get('/get-submitted', middlewareController.verifyToken, exerciseController.handleGetSubmitted);
 router.get('/get-out-date', middlewareController.verifyToken, exerciseController.handleGetOutDate);

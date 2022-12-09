@@ -137,6 +137,7 @@ let getDetail = (userId, postId) => {
                     'type',
                     'isCompleted',
                     'topicId',
+                    [sequelize.col('Result_Submits.score'), 'score'],
                     [sequelize.col('Class.name'), 'className'],
                     [sequelize.col('Exercise.id'), 'exerciseId'],
                     [sequelize.col('Exercise.title'), 'title'],
@@ -153,6 +154,14 @@ let getDetail = (userId, postId) => {
                     {
                         model: db.Class,
                         attributes: [],
+                    },
+                    {
+                        model: db.Result_Submit,
+                        attributes: [],
+                        where: {
+                            userId: userId,
+                        },
+                        required: false,
                     },
                 ],
                 raw: true,
@@ -541,7 +550,7 @@ let getAllNameExercise = (classId) => {
                 where: {
                     class: classId,
                     isDelete: 0,
-                    type: ['BT', 'CH'],
+                    type: ['BT', 'CH', 'KT'],
                 },
                 attributes: ['content', 'id', 'type', 'deadline'],
                 raw: true,
@@ -561,12 +570,15 @@ let getAllScoreExercise = (classId, userId) => {
                 where: {
                     class: classId,
                     isDelete: 0,
-                    type: ['BT', 'CH'],
+                    type: ['BT', 'CH', 'KT'],
                 },
                 attributes: [
                     'content',
                     ['id', 'postId'],
+                    'deadline',
                     'createdAt',
+                    [sequelize.col('Exam.Takes.score'), 'scoreExam'],
+                    [sequelize.col('Exam.Takes.examId'), 'examId'],
                     [sequelize.col('Result_Submits.userId'), 'userId'],
                     [sequelize.col('Result_Submits.score'), 'score'],
                     [sequelize.col('Result_Submits.comment'), 'comment'],
@@ -582,6 +594,12 @@ let getAllScoreExercise = (classId, userId) => {
                         where: {
                             userId: userId,
                         },
+                        required: false,
+                    },
+                    {
+                        model: db.Exam,
+                        attributes: [],
+                        include: [{ model: db.Take, attributes: [] }],
                         required: false,
                     },
                 ],
