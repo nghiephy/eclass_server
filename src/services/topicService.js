@@ -52,6 +52,27 @@ let createTopic = (userId, classId, name) => {
     });
 };
 
+let updateTopic = (userId, topicId, classId, newName) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const topicRes = await db.Topic.update(
+                {
+                    name: newName,
+                },
+                {
+                    where: {
+                        classId: classId,
+                        id: topicId,
+                    },
+                },
+            );
+            resolve(topicRes);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = {
     getTopics: getTopics,
     createTopic: createTopic,
